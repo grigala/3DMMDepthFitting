@@ -1,0 +1,20 @@
+# IntelliJ IDEA
+.idea
+*.iml
+*.xml
+target/
+
+# Mac OS
+.DS_Store
+
+# LaTeX
+*.aux
+*.out
+*.gz
+*.dvi
+*.glsdefs
+*.bst
+*.blg
+*.bbl
+*.toc
+
