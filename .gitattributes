@@ -1,2 +1,2 @@
-scala/docs/* lingust-vendored=false
-
+scala/docs/ linguist-documentation
+*.html linguist-language=Scala
