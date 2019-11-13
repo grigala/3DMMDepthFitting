@@ -1,6 +1,6 @@
 # Efficient 3D Morphable Model Face Fitting Using Depth Sensing Technologies
 
-This is the root directory for the project we've implemented during as part of my MSc work. It performs a 3D Morphable Model face fitting and as a result produces a dense 3D face reconstructions based on a single image and the depth information obtained from the camera.
+This is the root directory for the project we've implemented as part of my MSc work. It performs a 3D Morphable Model face fitting and as a result produces a dense 3D face reconstructions based on a single image and the depth information obtained from the camera.
  
  
 Project contains two language specific modules Python server and the Scala client. The server handles all the camera related operations, including configuration, data acquisition and delivery for fitting pipeline.
