@@ -1,5 +1,8 @@
 package ch.unibas.cs.gravis.thriftservice.rendering
 
+import scalismo.faces.image.{ColumnMajorImageDomain, ImageBuffer, PixelImage, RowMajorImageDomain}
+import scalismo.faces.render.RenderBuffer
+
 import scala.reflect.ClassTag
 
 case class ZBuffer[A: ClassTag](override val width: Int, override val height: Int, background: A, zInit: Double = Double.PositiveInfinity) extends RenderBuffer[A] {

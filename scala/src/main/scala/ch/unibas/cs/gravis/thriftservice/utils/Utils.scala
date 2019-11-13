@@ -1,11 +1,22 @@
 package ch.unibas.cs.gravis.thriftservice.utils
 
+import java.io.File
+
+import breeze.linalg.DenseVector
+import breeze.plot.Plot
+import scalismo.color.{RGB, RGBA}
+import scalismo.common.PointId
+import scalismo.faces.image.PixelImage
+import scalismo.geometry.{Landmark, Point, SquareMatrix, _3D}
+import scalismo.mesh.{TriangleMesh, TriangleMesh3D}
+import scalismo.statisticalmodel.{MultivariateNormalDistribution, StatisticalMeshModel}
+
 object Utils {
 
     def marginalizeModelForCorrespondences(model: StatisticalMeshModel,
                                            correspondences: Seq[(
-                                               PointId, Point[_3D], MultivariateNormalDistribution
-                                               )]): (StatisticalMeshModel, Seq[(PointId, Point[_3D], MultivariateNormalDistribution)]) = {
+                                                   PointId, Point[_3D], MultivariateNormalDistribution
+                                                   )]): (StatisticalMeshModel, Seq[(PointId, Point[_3D], MultivariateNormalDistribution)]) = {
 
         val (modelIds, _, _) = correspondences.unzip3
         val marginalizedModel = model.marginal(modelIds.toIndexedSeq)
@@ -72,8 +83,8 @@ object Utils {
             modelLandmarks.foreach(l => {
                 if (lm.id == l.id) {
                     val sum: Double = math.pow(math.abs(lm.point.x - l.point.x), 2) +
-                        math.pow(math.abs(lm.point.y - l.point.y), 2) +
-                        math.pow(math.abs(lm.point.z - l.point.z), 2)
+                            math.pow(math.abs(lm.point.y - l.point.y), 2) +
+                            math.pow(math.abs(lm.point.z - l.point.z), 2)
                     absSum = absSum + sum
                 }
             })
@@ -90,8 +101,8 @@ object Utils {
             val p1 = p._1
             val p2 = p._2
             sum += math.pow(p1.r - p2.r, 2) +
-                math.pow(p1.g - p2.g, 2) +
-                math.pow(p1.b - p2.b, 2)
+                    math.pow(p1.g - p2.g, 2) +
+                    math.pow(p1.b - p2.b, 2)
         }
         math.sqrt(sum / zipped.length)
     }

@@ -1,5 +1,10 @@
 package ch.unibas.cs.gravis.thriftservice.rendering
 
+import scalismo.faces.parameters.{Camera, ColorTransform, DirectionalLight, ImageSize, MoMoInstance, Pose, RenderParameter, SphericalHarmonicsLight, ViewParameter}
+import scalismo.faces.render.Affine3D
+import scalismo.geometry
+import scalismo.geometry.SquareMatrix
+
 /**
  * This is a static class with static intrinsic/extrinsic parameters
  * which are going to be injected into RenderParameter object.
@@ -14,7 +19,7 @@ class InjectExtrinsicParameters(pose: Pose,
                                 momo: MoMoInstance,
                                 imageSize: ImageSize,
                                 cT: ColorTransform)
-    extends RenderParameter(pose, view, camera, envMap, dirLight, momo, imageSize, cT) {
+        extends RenderParameter(pose, view, camera, envMap, dirLight, momo, imageSize, cT) {
 
     override def modelViewTransform: Affine3D = {
 

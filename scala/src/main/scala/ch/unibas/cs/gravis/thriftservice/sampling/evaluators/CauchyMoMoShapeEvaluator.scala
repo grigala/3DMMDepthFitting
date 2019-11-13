@@ -1,6 +1,16 @@
 package ch.unibas.cs.gravis.thriftservice.sampling.evaluators
 
 import ch.unibas.cs.gravis.thriftservice.utils.{DecimateModel, MoMoHelpers}
+import org.apache.commons.math3.distribution.CauchyDistribution
+import scalismo.common.PointId
+import scalismo.faces.momo.MoMo
+import scalismo.faces.parameters.RenderParameter
+import scalismo.geometry.{Point, _3D}
+import scalismo.mesh.TriangleMesh
+import scalismo.numerics.UniformMeshSampler3D
+import scalismo.sampling.DistributionEvaluator
+import scalismo.statisticalmodel.{MultivariateNormalDistribution, StatisticalMeshModel}
+import scalismo.utils.Random
 
 case class CauchyMoMoShapeEvaluator(model: MoMo,
                                     target: TriangleMesh[_3D],

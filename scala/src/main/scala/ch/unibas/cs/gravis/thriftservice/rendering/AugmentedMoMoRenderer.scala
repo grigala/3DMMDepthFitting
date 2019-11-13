@@ -1,6 +1,15 @@
 package ch.unibas.cs.gravis.thriftservice.rendering
 
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers
+import scalismo.color.RGBA
+import scalismo.faces.image.PixelImage
+import scalismo.faces.landmarks.TLMSLandmark2D
+import scalismo.faces.momo.MoMo
+import scalismo.faces.parameters.RenderParameter
+import scalismo.faces.sampling.face.MoMoRenderer
+import scalismo.geometry.{Landmark, Point, _3D}
+import scalismo.mesh.{MeshSurfaceProperty, VertexColorMesh3D}
+import scalismo.utils.Memoize
 
 class AugmentedMoMoRenderer(model: MoMo, clearColor: RGBA) extends MoMoRenderer(model, clearColor) with ParametricLandmarksRenderer3D {
     override def renderImage(parameters: RenderParameter): PixelImage[RGBA] = super.renderImage(parameters)

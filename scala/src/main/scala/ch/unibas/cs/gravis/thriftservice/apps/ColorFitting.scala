@@ -4,13 +4,48 @@ import java.io.File
 import java.text.{DateFormat, SimpleDateFormat}
 import java.util.{Calendar, Date}
 
+import breeze.linalg.{DenseMatrix, DenseVector}
 import ch.unibas.cs.gravis.thriftservice.logging.ImageSamplingLogger
 import ch.unibas.cs.gravis.thriftservice.rendering.AugmentedMoMoRenderer
 import ch.unibas.cs.gravis.thriftservice.sampling.evaluators.{CauchyMoMoShapeEvaluator, IndependentLandmarksEvaluator, LandmarksRendererEvaluator3D}
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers._
 import javax.swing.JLabel
+import org.apache.commons.math3.distribution.CauchyDistribution
+import scalismo.color.{RGB, RGBA}
+import scalismo.faces.deluminate.SphericalHarmonicsOptimizer
+import scalismo.faces.gui.ImagePanel
+import scalismo.faces.image.PixelImage
+import scalismo.faces.io.renderparameters.RenderParameterJSONFormat._
+import scalismo.faces.io.{MoMoIO, PixelImageIO, RenderParameterIO}
+import scalismo.faces.mesh.MeshSurfaceSampling
+import scalismo.faces.momo.MoMo
+import scalismo.faces.parameters._
+import scalismo.faces.sampling.face.evaluators.PixelEvaluators.IsotropicGaussianPixelEvaluator
+import scalismo.faces.sampling.face.evaluators.PointEvaluators.IsotropicGaussianPointEvaluator
+import scalismo.faces.sampling.face.evaluators.PriorEvaluators.{GaussianShapePrior, GaussianTexturePrior}
+import scalismo.faces.sampling.face.evaluators.{CollectiveLikelihoodEvaluator, HistogramRGB, ImageRendererEvaluator, IndependentPixelEvaluator}
+import scalismo.faces.sampling.face.loggers._
+import scalismo.faces.sampling.face.proposals.SphericalHarmonicsLightProposals._
+import scalismo.faces.sampling.face.proposals._
+import scalismo.faces.sampling.face.{ParametricLandmarksRenderer, ParametricModel}
+import scalismo.geometry._
+import scalismo.mesh.TriangleMesh
+import scalismo.sampling.algorithms.MetropolisHastings
+import scalismo.sampling.evaluators.ProductEvaluator
+import scalismo.sampling.loggers.{BestSampleLogger, ChainStateLogger, ChainStateLoggerContainer}
+import scalismo.sampling.proposals.{MetropolisFilterProposal, MixtureProposal}
+import scalismo.sampling.{ProposalGenerator, TransitionProbability}
+import scalismo.statisticalmodel.MultivariateNormalDistribution
+import scalismo.utils.Random
+import spray.json._
 
 /* ===implicits==*/
+import scalismo.faces.gui.GUIBlock._
+import scalismo.faces.sampling.evaluators.CachedDistributionEvaluator.implicits._
+import scalismo.faces.sampling.face.proposals.ImageCenteredProposal.implicits._
+import scalismo.faces.sampling.face.proposals.ParameterProposals.implicits._
+import scalismo.sampling.loggers.ChainStateLogger.implicits._
+import scalismo.sampling.proposals.MixtureProposal.implicits._
 
 
 object ColorFitting {
@@ -57,7 +92,7 @@ object ColorFitting {
         val shapeScaleProposal = GaussianMoMoShapeCaricatureProposal(0.01f)
         val shapeProposal = MixtureProposal(
             0.5f *: shapeHF +
-                0.5f *: shapeScaleProposal
+                    0.5f *: shapeScaleProposal
         ).toParameterProposal
 
         val textureC = GaussianMoMoColorProposal(0.2f)
@@ -68,7 +103,7 @@ object ColorFitting {
 
         MixtureProposal(
             shapeProposal +
-                3f *: textureProposal
+                    3f *: textureProposal
         )
     }
 
@@ -108,7 +143,7 @@ object ColorFitting {
 
         MixtureProposal(
             (5f / 6f) *: MixtureProposal(lightSHSpatial + lightSHBandMixer + lightSHIntensity + lightSHPert + lightSHColor).toParameterProposal
-                + (1f / 6f) *: shOptimizerProposal
+                    + (1f / 6f) *: shOptimizerProposal
         )
     }
 
@@ -185,9 +220,9 @@ object ColorFitting {
             MetropolisFilterProposal(
                 MixtureProposal(
                     totalPose +
-                        momoProposal +
-                        2f *: colorProposal +
-                        2f *: lightProposal
+                            momoProposal +
+                            2f *: colorProposal +
+                            2f *: lightProposal
                 ),
                 landmarksEvaluator
             ),

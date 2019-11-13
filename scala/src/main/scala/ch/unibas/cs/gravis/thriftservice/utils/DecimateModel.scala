@@ -1,10 +1,18 @@
 package ch.unibas.cs.gravis.thriftservice.utils
 
+import scalismo.common.interpolation.FieldInterpolator
+import scalismo.common.{DiscreteField, Field, RealSpace, UnstructuredPointsDomain}
+import scalismo.geometry.{EuclideanVector, Point, _3D}
+import scalismo.mesh.boundingSpheres.{ClosestPointInTriangle, ClosestPointIsVertex, ClosestPointOnLine}
+import scalismo.mesh.{SurfacePointProperty, TriangleMesh}
+import scalismo.statisticalmodel.StatisticalMeshModel
+import scalismo.utils.MeshConversion
+
 object DecimateModel {
     private val DEBUG = false
 
     class VectorMeshFieldInterpolator(mesh: TriangleMesh[_3D]) extends
-        FieldInterpolator[_3D, UnstructuredPointsDomain[_3D], EuclideanVector[_3D]] {
+            FieldInterpolator[_3D, UnstructuredPointsDomain[_3D], EuclideanVector[_3D]] {
 
         /**
          * Interpolates a given discrete field

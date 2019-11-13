@@ -3,6 +3,12 @@ package ch.unibas.cs.gravis.thriftservice.scripts
 import java.io.File
 
 import ch.unibas.cs.gravis.thriftservice.utils.DecimateModel
+import scalismo.faces.io.MoMoIO
+import scalismo.faces.momo.MoMo
+import scalismo.geometry.{Landmark, Point, _3D}
+import scalismo.io.{LandmarkIO, MeshIO, StatismoIO}
+import scalismo.mesh.TriangleMesh
+import scalismo.registration.{LandmarkRegistration, RigidTransformation}
 
 object DecimatedModelTests extends App {
 

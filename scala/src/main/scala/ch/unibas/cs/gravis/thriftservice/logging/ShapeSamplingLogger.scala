@@ -1,6 +1,9 @@
 package ch.unibas.cs.gravis.thriftservice.logging
 
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers.Sample
+import scalismo.faces.sampling.face.loggers.VerbosePrintLogger
+import scalismo.sampling.{DistributionEvaluator, ProposalGenerator}
+import scalismo.sampling.loggers.AcceptRejectLogger
 
 import scala.collection.mutable
 
@@ -43,7 +46,7 @@ class ShapeSamplingLogger(logToConsole: Boolean = false) extends AcceptRejectLog
         val generatorNames: Set[String] = numRejected.keys.toSet.union(numAccepted.keys.toSet)
         val acceptanceRatios: Set[(String, Double)] = for (generatorName <- generatorNames) yield {
             val total = (numAccepted.getOrElse(generatorName, 0)
-                + numRejected.getOrElse(generatorName, 0)).toDouble
+                    + numRejected.getOrElse(generatorName, 0)).toDouble
             (generatorName, numAccepted.getOrElse(generatorName, 0) / total)
         }
         acceptanceRatios.toMap

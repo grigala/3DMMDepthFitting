@@ -1,6 +1,16 @@
 package ch.unibas.cs.gravis.thriftservice.utils
 
+import breeze.linalg.DenseVector
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers.Parameters
+import scalismo.common.UnstructuredPointsDomain
+import scalismo.faces.momo.MoMo
+import scalismo.faces.parameters.{MoMoInstance, Pose, RenderParameter}
+import scalismo.faces.render.Rotation3D
+import scalismo.geometry.{EuclideanVector, Point, _3D}
+import scalismo.mesh.TriangleMesh3D
+import scalismo.statisticalmodel.{DiscreteLowRankGaussianProcess, ModelHelpers, StatisticalMeshModel}
+import spray.json._
+import scalismo.faces.io.renderparameters.RenderParameterJSONFormat._
 
 object MoMoHelpers {
 

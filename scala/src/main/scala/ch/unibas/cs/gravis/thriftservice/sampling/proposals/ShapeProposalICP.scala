@@ -1,13 +1,22 @@
 package ch.unibas.cs.gravis.thriftservice.sampling.proposals
 
+import breeze.linalg.DenseVector
 import ch.unibas.cs.gravis.thriftservice.utils.DecimateModel
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers.Sample
+import scalismo.common.PointId
+import scalismo.faces.parameters.RenderParameter
+import scalismo.geometry.{EuclideanVector, Point, _3D}
+import scalismo.mesh.TriangleMesh
+import scalismo.numerics.UniformMeshSampler3D
+import scalismo.registration.RigidTransformation
+import scalismo.sampling.{ProposalGenerator, TransitionProbability}
+import scalismo.statisticalmodel.{LowRankGaussianProcess, MultivariateNormalDistribution, StatisticalMeshModel}
 
 case class ShapeProposalICP(model: StatisticalMeshModel,
                             targetMesh: TriangleMesh[_3D],
                             uncertainty: MultivariateNormalDistribution,
                             stepLength: Double)(implicit val rng: scalismo.utils.Random) extends
-    ProposalGenerator[Sample] with TransitionProbability[Sample] {
+        ProposalGenerator[Sample] with TransitionProbability[Sample] {
 
     val targetMeshPoints: IndexedSeq[Point[_3D]] = UniformMeshSampler3D(targetMesh, 1000).sample().map(_._1)
     val decimatedModel: StatisticalMeshModel = DecimateModel.decimate(model, 0.95)

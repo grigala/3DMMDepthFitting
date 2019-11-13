@@ -2,7 +2,18 @@ package ch.unibas.cs.gravis.thriftservice.apps
 
 import java.io.File
 
+import ch.unibas.cs.gravis.realsense.RealSenseService
+import com.twitter.finagle.Thrift
+import com.twitter.util.{Await, Future}
+import scalismo.color.RGB
+import scalismo.faces.image.PixelImage
+import scalismo.faces.landmarks.TLMSLandmark2D
+import scalismo.geometry.{Landmark, _3D}
+import scalismo.mesh.TriangleMesh
 import ch.unibas.cs.gravis.thriftservice.utils.ThriftConversions._
+import scalismo.faces.io.MoMoIO
+import scalismo.faces.momo.MoMo
+import scalismo.faces.parameters.RenderParameter
 
 /**
  * This object is written solely for web-service call.

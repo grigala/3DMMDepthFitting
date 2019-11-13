@@ -1,6 +1,9 @@
 package ch.unibas.cs.gravis.thriftservice.sampling.evaluators
 
+import breeze.stats.distributions.Gaussian
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers.Sample
+import scalismo.sampling.DistributionEvaluator
+import scalismo.statisticalmodel.StatisticalMeshModel
 
 case class PriorEvaluator(model: StatisticalMeshModel)
     extends DistributionEvaluator[Sample] {

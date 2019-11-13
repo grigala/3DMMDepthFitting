@@ -1,5 +1,12 @@
 package ch.unibas.cs.gravis.thriftservice.rendering
 
+import scalismo.color.RGBA
+import scalismo.faces.mesh.ColorNormalMesh3D
+import scalismo.faces.parameters.RenderParameter
+import scalismo.faces.render.{Affine3D, PixelShader, PointShader, WindowTransform}
+import scalismo.geometry.{EuclideanVector, Point, _3D}
+import scalismo.mesh.{MeshSurfaceProperty, TriangleMesh3D, VertexColorMesh3D}
+
 /**
  * Shader object built from a RenderParameter
  *

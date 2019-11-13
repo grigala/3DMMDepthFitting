@@ -1,10 +1,16 @@
 package ch.unibas.cs.gravis.thriftservice.sampling.proposals
 
+import breeze.linalg.{DenseMatrix, DenseVector}
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers.Sample
 import ch.unibas.cs.gravis.thriftservice.utils.MoMoHelpers
+import scalismo.faces.parameters.RenderParameter
+import scalismo.faces.sampling.face.proposals.GaussianParameterProposal
+import scalismo.sampling.{ProposalGenerator, TransitionProbability}
+import scalismo.statisticalmodel.MultivariateNormalDistribution
+import scalismo.utils.Random.implicits._
 
 case class ShapeProposal(paramVectorSize: Int, stddev: Double)
-    extends ProposalGenerator[Sample] with TransitionProbability[Sample] {
+        extends ProposalGenerator[Sample] with TransitionProbability[Sample] {
 
     val perturbationDistr = new MultivariateNormalDistribution(
         DenseVector.zeros(paramVectorSize),

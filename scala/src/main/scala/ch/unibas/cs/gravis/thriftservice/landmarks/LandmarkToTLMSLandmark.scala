@@ -2,6 +2,8 @@ package ch.unibas.cs.gravis.thriftservice.landmarks
 
 import java.io.{File, FileOutputStream, OutputStream, PrintWriter}
 
+import scalismo.geometry.{Dim, Landmark, NDSpace}
+
 import scala.util.Try
 
 object LandmarkToTLMSLandmark {

@@ -1,9 +1,20 @@
 package ch.unibas.cs.gravis.thriftservice.sampling.evaluators
 
+import ch.unibas.cs.gravis.thriftservice.utils.{DecimateModel, MoMoHelpers}
+import scalismo.common.PointId
+import scalismo.faces.momo.MoMo
+import scalismo.faces.parameters.RenderParameter
+import scalismo.geometry.{Point, _3D}
+import scalismo.mesh.TriangleMesh
+import scalismo.numerics.UniformMeshSampler3D
+import scalismo.sampling.DistributionEvaluator
+import scalismo.statisticalmodel.{MultivariateNormalDistribution, StatisticalMeshModel}
+import scalismo.utils.Random
+
 case class MultiNormalMoMoShapeEvaluator(model: MoMo,
                                          target: TriangleMesh[_3D],
                                          uncertainty: MultivariateNormalDistribution)(implicit val rng: Random)
-    extends DistributionEvaluator[RenderParameter] {
+        extends DistributionEvaluator[RenderParameter] {
 
     val referencePoints: IndexedSeq[Point[_3D]] = UniformMeshSampler3D(model.referenceMesh, 1000).sample().map(_._1)
 
@@ -14,8 +25,8 @@ case class MultiNormalMoMoShapeEvaluator(model: MoMo,
 
     override def logValue(sample: RenderParameter): Double = {
         val currentModelInstance = model
-            .instance(sample.momo.coefficients)
-            .transform(sample.pose.transform.apply).shape
+                .instance(sample.momo.coefficients)
+                .transform(sample.pose.transform.apply).shape
 
         val likelihoods = modelIds.map(id => {
             val pointOnCurrentInstance = currentModelInstance.pointSet.point(id)

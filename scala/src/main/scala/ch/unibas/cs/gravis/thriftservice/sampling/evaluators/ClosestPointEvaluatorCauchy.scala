@@ -2,6 +2,13 @@ package ch.unibas.cs.gravis.thriftservice.sampling.evaluators
 
 import ch.unibas.cs.gravis.thriftservice.utils.DecimateModel
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers.Sample
+import org.apache.commons.math3.distribution.CauchyDistribution
+import scalismo.common.PointId
+import scalismo.geometry.{Point, _3D}
+import scalismo.mesh.TriangleMesh
+import scalismo.numerics.UniformMeshSampler3D
+import scalismo.sampling.DistributionEvaluator
+import scalismo.statisticalmodel.StatisticalMeshModel
 
 case class ClosestPointEvaluatorCauchy(model: StatisticalMeshModel,
                                        target: TriangleMesh[_3D],

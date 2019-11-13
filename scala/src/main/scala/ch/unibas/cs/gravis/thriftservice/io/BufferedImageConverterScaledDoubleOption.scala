@@ -2,6 +2,8 @@ package ch.unibas.cs.gravis.thriftservice.io
 
 import java.awt.image.BufferedImage
 
+import scalismo.faces.image.{BufferedImageConverter, PixelImage}
+
 /**
  * BufferedImageConverterScaledDouble can be used as a parameter to PixelImageIO.write
  * Maps Double values between min and max to values from 0 to 255. Ignores None values -> black

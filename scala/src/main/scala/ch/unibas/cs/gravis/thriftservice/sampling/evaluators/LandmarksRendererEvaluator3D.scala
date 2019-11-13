@@ -1,11 +1,14 @@
 package ch.unibas.cs.gravis.thriftservice.sampling.evaluators
 
 import ch.unibas.cs.gravis.thriftservice.rendering.ParametricLandmarksRenderer3D
+import scalismo.faces.parameters.RenderParameter
+import scalismo.geometry.{Dim, Landmark, _3D}
+import scalismo.sampling.DistributionEvaluator
 
 class LandmarksRendererEvaluator3D(landmarks: Set[String],
                                    renderer: ParametricLandmarksRenderer3D,
                                    lmEvaluator: DistributionEvaluator[Map[String, Landmark[_3D]]])
-    extends DistributionEvaluator[RenderParameter] with LandmarksRendererEvaluator[_3D] {
+        extends DistributionEvaluator[RenderParameter] with LandmarksRendererEvaluator[_3D] {
     override def logValue(rps: RenderParameter): Double = {
         val renderedLm = for {
             id <- landmarks

@@ -2,6 +2,13 @@ package ch.unibas.cs.gravis.thriftservice.sampling.evaluators
 
 import ch.unibas.cs.gravis.thriftservice.utils.MoMoHelpers._
 import ch.unibas.cs.gravis.thriftservice.utils.Utils._
+import scalismo.common.PointId
+import scalismo.faces.momo.MoMo
+import scalismo.faces.parameters.RenderParameter
+import scalismo.geometry.{EuclideanVector, Point, _3D}
+import scalismo.mesh.TriangleMesh
+import scalismo.sampling.DistributionEvaluator
+import scalismo.statisticalmodel.{MultivariateNormalDistribution, StatisticalMeshModel}
 
 /**
  * Landmark Correspondence Evaluator
@@ -21,8 +28,8 @@ case class MoMoLMCorrespondenceEvaluator(model: MoMo,
     override def logValue(sample: RenderParameter): Double = {
 
         val currModelInstance: TriangleMesh[_3D] = marginalizedModel
-            .instance(sample.momo.coefficients.shape)
-            .transform(sample.pose.transform.apply)
+                .instance(sample.momo.coefficients.shape)
+                .transform(sample.pose.transform.apply)
 
         val likelihoods = newCorrespondences.map(correspondence => {
             val (id: PointId, targetPoint: Point[_3D], uncertainty: MultivariateNormalDistribution) = correspondence

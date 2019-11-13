@@ -1,7 +1,10 @@
 package ch.unibas.cs.gravis.thriftservice.sampling.evaluators
 
+import scalismo.geometry.{Dim, Landmark, Point}
+import scalismo.sampling.evaluators.PairEvaluator
+
 class IndependentLandmarksEvaluator[D <: Dim](val pointEvaluator: PairEvaluator[Point[D]])
-    extends PairEvaluator[Map[String, Landmark[D]]] {
+        extends PairEvaluator[Map[String, Landmark[D]]] {
 
     override def logValue(first: Map[String, Landmark[D]], second: Map[String, Landmark[D]]): Double = {
 

@@ -33,31 +33,18 @@ import scala.collection.mutable.{
 import scala.collection.{Map, Set}
 
 
-object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
+object ThriftPixel extends ValidatingThriftStructCodec3[ThriftPixel] {
   val NoPassthroughFields: immutable$Map[Short, TFieldBlob] = immutable$Map.empty[Short, TFieldBlob]
-  val Struct = new TStruct("ThriftImage")
-  val DataField = new TField("data", TType.STRING, 1)
-  val DataFieldManifest = implicitly[Manifest[String]]
-  val WidthField = new TField("width", TType.I32, 2)
+  val Struct = new TStruct("ThriftPixel")
+  val WidthField = new TField("width", TType.I32, 1)
   val WidthFieldManifest = implicitly[Manifest[Int]]
-  val HeightField = new TField("height", TType.I32, 3)
+  val HeightField = new TField("height", TType.I32, 2)
   val HeightFieldManifest = implicitly[Manifest[Int]]
 
   /**
    * Field information in declaration order.
    */
   lazy val fieldInfos: scala.List[ThriftStructFieldInfo] = scala.List[ThriftStructFieldInfo](
-    new ThriftStructFieldInfo(
-      DataField,
-      false,
-      true,
-      DataFieldManifest,
-      _root_.scala.None,
-      _root_.scala.None,
-      immutable$Map.empty[String, String],
-      immutable$Map.empty[String, String],
-      None
-    ),
     new ThriftStructFieldInfo(
       WidthField,
       false,
@@ -88,32 +75,23 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
   /**
    * Checks that all required fields are non-null.
    */
-  def validate(_item: ThriftImage): Unit = {
-    if (_item.data == null) throw new TProtocolException("Required field data cannot be null")
+  def validate(_item: ThriftPixel): Unit = {
   }
 
   /**
    * Checks that the struct is a valid as a new instance. If there are any missing required or
    * construction required fields, return a non-empty list.
    */
-  def validateNewInstance(item: ThriftImage): scala.Seq[com.twitter.scrooge.validation.Issue] = {
+  def validateNewInstance(item: ThriftPixel): scala.Seq[com.twitter.scrooge.validation.Issue] = {
     val buf = scala.collection.mutable.ListBuffer.empty[com.twitter.scrooge.validation.Issue]
 
-    if (item.data == null)
-      buf += com.twitter.scrooge.validation.MissingRequiredField(fieldInfos.apply(0))
-    buf ++= validateField(item.data)
     buf ++= validateField(item.width)
     buf ++= validateField(item.height)
     buf.toList
   }
 
-  def withoutPassthroughFields(original: ThriftImage): ThriftImage =
+  def withoutPassthroughFields(original: ThriftPixel): ThriftPixel =
     new Immutable(
-      data =
-        {
-          val field = original.data
-          field
-        },
       width =
         {
           val field = original.width
@@ -126,15 +104,13 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
         }
     )
 
-  override def encode(_item: ThriftImage, _oproto: TProtocol): Unit = {
+  override def encode(_item: ThriftPixel, _oproto: TProtocol): Unit = {
     _item.write(_oproto)
   }
 
 
-  private[this] def lazyDecode(_iprot: LazyTProtocol): ThriftImage = {
+  private[this] def lazyDecode(_iprot: LazyTProtocol): ThriftPixel = {
 
-    var dataOffset: Int = -1
-    var _got_data = false
     var width: Int = 0
     var _got_width = false
     var height: Int = 0
@@ -153,21 +129,6 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
         _field.id match {
           case 1 =>
             _field.`type` match {
-              case TType.STRING =>
-                dataOffset = _iprot.offsetSkipString
-    
-                _got_data = true
-              case _actualType =>
-                val _expectedType = TType.STRING
-                throw new TProtocolException(
-                  "Received wrong type for field 'data' (expected=%s, actual=%s).".format(
-                    ttypeToString(_expectedType),
-                    ttypeToString(_actualType)
-                  )
-                )
-            }
-          case 2 =>
-            _field.`type` match {
               case TType.I32 =>
     
                 width = readWidthValue(_iprot)
@@ -181,7 +142,7 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
                   )
                 )
             }
-          case 3 =>
+          case 2 =>
             _field.`type` match {
               case TType.I32 =>
     
@@ -206,15 +167,13 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
     }
     _iprot.readStructEnd()
 
-    if (!_got_data) throw new TProtocolException("Required field 'data' was not found in serialized data for struct ThriftImage")
-    if (!_got_width) throw new TProtocolException("Required field 'width' was not found in serialized data for struct ThriftImage")
-    if (!_got_height) throw new TProtocolException("Required field 'height' was not found in serialized data for struct ThriftImage")
+    if (!_got_width) throw new TProtocolException("Required field 'width' was not found in serialized data for struct ThriftPixel")
+    if (!_got_height) throw new TProtocolException("Required field 'height' was not found in serialized data for struct ThriftPixel")
     new LazyImmutable(
       _iprot,
       _iprot.buffer,
       _start_offset,
       _iprot.offset,
-      dataOffset,
       width,
       height,
       if (_passthroughFields == null)
@@ -224,15 +183,13 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
     )
   }
 
-  override def decode(_iprot: TProtocol): ThriftImage =
+  override def decode(_iprot: TProtocol): ThriftPixel =
     _iprot match {
       case i: LazyTProtocol => lazyDecode(i)
       case i => eagerDecode(i)
     }
 
-  private[realsense] def eagerDecode(_iprot: TProtocol): ThriftImage = {
-    var data: String = null
-    var _got_data = false
+  private[realsense] def eagerDecode(_iprot: TProtocol): ThriftPixel = {
     var width: Int = 0
     var _got_width = false
     var height: Int = 0
@@ -249,20 +206,6 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
         _field.id match {
           case 1 =>
             _field.`type` match {
-              case TType.STRING =>
-                data = readDataValue(_iprot)
-                _got_data = true
-              case _actualType =>
-                val _expectedType = TType.STRING
-                throw new TProtocolException(
-                  "Received wrong type for field 'data' (expected=%s, actual=%s).".format(
-                    ttypeToString(_expectedType),
-                    ttypeToString(_actualType)
-                  )
-                )
-            }
-          case 2 =>
-            _field.`type` match {
               case TType.I32 =>
                 width = readWidthValue(_iprot)
                 _got_width = true
@@ -275,7 +218,7 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
                   )
                 )
             }
-          case 3 =>
+          case 2 =>
             _field.`type` match {
               case TType.I32 =>
                 height = readHeightValue(_iprot)
@@ -299,11 +242,9 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
     }
     _iprot.readStructEnd()
 
-    if (!_got_data) throw new TProtocolException("Required field 'data' was not found in serialized data for struct ThriftImage")
-    if (!_got_width) throw new TProtocolException("Required field 'width' was not found in serialized data for struct ThriftImage")
-    if (!_got_height) throw new TProtocolException("Required field 'height' was not found in serialized data for struct ThriftImage")
+    if (!_got_width) throw new TProtocolException("Required field 'width' was not found in serialized data for struct ThriftPixel")
+    if (!_got_height) throw new TProtocolException("Required field 'height' was not found in serialized data for struct ThriftPixel")
     new Immutable(
-      data,
       width,
       height,
       if (_passthroughFields == null)
@@ -314,32 +255,16 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
   }
 
   def apply(
-    data: String,
     width: Int,
     height: Int
-  ): ThriftImage =
+  ): ThriftPixel =
     new Immutable(
-      data,
       width,
       height
     )
 
-  def unapply(_item: ThriftImage): _root_.scala.Option[_root_.scala.Tuple3[String, Int, Int]] = _root_.scala.Some(_item.toTuple)
+  def unapply(_item: ThriftPixel): _root_.scala.Option[_root_.scala.Tuple2[Int, Int]] = _root_.scala.Some(_item.toTuple)
 
-
-  @inline private[realsense] def readDataValue(_iprot: TProtocol): String = {
-    _iprot.readString()
-  }
-
-  @inline private def writeDataField(data_item: String, _oprot: TProtocol): Unit = {
-    _oprot.writeFieldBegin(DataField)
-    writeDataValue(data_item, _oprot)
-    _oprot.writeFieldEnd()
-  }
-
-  @inline private def writeDataValue(data_item: String, _oprot: TProtocol): Unit = {
-    _oprot.writeString(data_item)
-  }
 
   @inline private[realsense] def readWidthValue(_iprot: TProtocol): Int = {
     _iprot.readI32()
@@ -370,29 +295,26 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
   }
 
 
-  object Immutable extends ThriftStructCodec3[ThriftImage] {
-    override def encode(_item: ThriftImage, _oproto: TProtocol): Unit = { _item.write(_oproto) }
-    override def decode(_iprot: TProtocol): ThriftImage = ThriftImage.decode(_iprot)
-    override lazy val metaData: ThriftStructMetaData[ThriftImage] = ThriftImage.metaData
+  object Immutable extends ThriftStructCodec3[ThriftPixel] {
+    override def encode(_item: ThriftPixel, _oproto: TProtocol): Unit = { _item.write(_oproto) }
+    override def decode(_iprot: TProtocol): ThriftPixel = ThriftPixel.decode(_iprot)
+    override lazy val metaData: ThriftStructMetaData[ThriftPixel] = ThriftPixel.metaData
   }
 
   /**
-   * The default read-only implementation of ThriftImage.  You typically should not need to
-   * directly reference this class; instead, use the ThriftImage.apply method to construct
+   * The default read-only implementation of ThriftPixel.  You typically should not need to
+   * directly reference this class; instead, use the ThriftPixel.apply method to construct
    * new instances.
    */
   class Immutable(
-      val data: String,
       val width: Int,
       val height: Int,
       override val _passthroughFields: immutable$Map[Short, TFieldBlob])
-    extends ThriftImage {
+    extends ThriftPixel {
     def this(
-      data: String,
       width: Int,
       height: Int
     ) = this(
-      data,
       width,
       height,
       Map.empty[Short, TFieldBlob]
@@ -408,11 +330,10 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
       _buf: Array[Byte],
       _start_offset: Int,
       _end_offset: Int,
-      dataOffset: Int,
       val width: Int,
       val height: Int,
       override val _passthroughFields: immutable$Map[Short, TFieldBlob])
-    extends ThriftImage {
+    extends ThriftPixel {
 
     override def write(_oprot: TProtocol): Unit = {
       _oprot match {
@@ -421,12 +342,6 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
       }
     }
 
-    lazy val data: String =
-      if (dataOffset == -1)
-        null
-      else {
-        _proto.decodeString(_buf, dataOffset)
-      }
 
     /**
      * Override the super hash code to make it a lazy val rather than def.
@@ -443,44 +358,40 @@ object ThriftImage extends ValidatingThriftStructCodec3[ThriftImage] {
   }
 
   /**
-   * This Proxy trait allows you to extend the ThriftImage trait with additional state or
-   * behavior and implement the read-only methods from ThriftImage using an underlying
+   * This Proxy trait allows you to extend the ThriftPixel trait with additional state or
+   * behavior and implement the read-only methods from ThriftPixel using an underlying
    * instance.
    */
-  trait Proxy extends ThriftImage {
-    protected def _underlying_ThriftImage: ThriftImage
-    override def data: String = _underlying_ThriftImage.data
-    override def width: Int = _underlying_ThriftImage.width
-    override def height: Int = _underlying_ThriftImage.height
-    override def _passthroughFields = _underlying_ThriftImage._passthroughFields
+  trait Proxy extends ThriftPixel {
+    protected def _underlying_ThriftPixel: ThriftPixel
+    override def width: Int = _underlying_ThriftPixel.width
+    override def height: Int = _underlying_ThriftPixel.height
+    override def _passthroughFields = _underlying_ThriftPixel._passthroughFields
   }
 }
 
 /**
- * Prefer the companion object's [[ch.unibas.cs.gravis.realsense.ThriftImage.apply]]
+ * Prefer the companion object's [[ch.unibas.cs.gravis.realsense.ThriftPixel.apply]]
  * for construction if you don't need to specify passthrough fields.
  */
-trait ThriftImage
+trait ThriftPixel
   extends ThriftStruct
-  with _root_.scala.Product3[String, Int, Int]
-  with ValidatingThriftStruct[ThriftImage]
+  with _root_.scala.Product2[Int, Int]
+  with ValidatingThriftStruct[ThriftPixel]
   with java.io.Serializable
 {
-  import ThriftImage._
+  import ThriftPixel._
 
-  def data: String
   def width: Int
   def height: Int
 
   def _passthroughFields: immutable$Map[Short, TFieldBlob] = immutable$Map.empty
 
-  def _1 = data
-  def _2 = width
-  def _3 = height
+  def _1 = width
+  def _2 = height
 
-  def toTuple: _root_.scala.Tuple3[String, Int, Int] = {
+  def toTuple: _root_.scala.Tuple2[Int, Int] = {
     (
-      data,
       width,
       height
     )
@@ -501,23 +412,16 @@ trait ThriftImage
         val _fieldOpt: _root_.scala.Option[TField] =
           _fieldId match {
             case 1 =>
-              if (data ne null) {
-                writeDataValue(data, _oprot)
-                _root_.scala.Some(ThriftImage.DataField)
+              if (true) {
+                writeWidthValue(width, _oprot)
+                _root_.scala.Some(ThriftPixel.WidthField)
               } else {
                 _root_.scala.None
               }
             case 2 =>
               if (true) {
-                writeWidthValue(width, _oprot)
-                _root_.scala.Some(ThriftImage.WidthField)
-              } else {
-                _root_.scala.None
-              }
-            case 3 =>
-              if (true) {
                 writeHeightValue(height, _oprot)
-                _root_.scala.Some(ThriftImage.HeightField)
+                _root_.scala.Some(ThriftPixel.HeightField)
               } else {
                 _root_.scala.None
               }
@@ -545,22 +449,18 @@ trait ThriftImage
    * is unknown and passthrough fields are enabled, then the blob will be stored in
    * _passthroughFields.
    */
-  def setField(_blob: TFieldBlob): ThriftImage = {
-    var data: String = this.data
+  def setField(_blob: TFieldBlob): ThriftPixel = {
     var width: Int = this.width
     var height: Int = this.height
     var _passthroughFields = this._passthroughFields
     _blob.id match {
       case 1 =>
-        data = readDataValue(_blob.read)
-      case 2 =>
         width = readWidthValue(_blob.read)
-      case 3 =>
+      case 2 =>
         height = readHeightValue(_blob.read)
       case _ => _passthroughFields += (_blob.id -> _blob)
     }
     new Immutable(
-      data,
       width,
       height,
       _passthroughFields
@@ -572,22 +472,18 @@ trait ThriftImage
    * known, it is reverted to its default value; if the field is unknown, it is removed
    * from the passthroughFields map, if present.
    */
-  def unsetField(_fieldId: Short): ThriftImage = {
-    var data: String = this.data
+  def unsetField(_fieldId: Short): ThriftPixel = {
     var width: Int = this.width
     var height: Int = this.height
 
     _fieldId match {
       case 1 =>
-        data = null
-      case 2 =>
         width = 0
-      case 3 =>
+      case 2 =>
         height = 0
       case _ =>
     }
     new Immutable(
-      data,
       width,
       height,
       _passthroughFields - _fieldId
@@ -599,17 +495,14 @@ trait ThriftImage
    * known, it is reverted to its default value; if the field is unknown, it is removed
    * from the passthroughFields map, if present.
    */
-  def unsetData: ThriftImage = unsetField(1)
+  def unsetWidth: ThriftPixel = unsetField(1)
 
-  def unsetWidth: ThriftImage = unsetField(2)
-
-  def unsetHeight: ThriftImage = unsetField(3)
+  def unsetHeight: ThriftPixel = unsetField(2)
 
 
   override def write(_oprot: TProtocol): Unit = {
-    ThriftImage.validate(this)
+    ThriftPixel.validate(this)
     _oprot.writeStructBegin(Struct)
-    if (data ne null) writeDataField(data, _oprot)
     writeWidthField(width, _oprot)
     writeHeightField(height, _oprot)
     if (_passthroughFields.nonEmpty) {
@@ -620,45 +513,42 @@ trait ThriftImage
   }
 
   def copy(
-    data: String = this.data,
     width: Int = this.width,
     height: Int = this.height,
     _passthroughFields: immutable$Map[Short, TFieldBlob] = this._passthroughFields
-  ): ThriftImage =
+  ): ThriftPixel =
     new Immutable(
-      data,
       width,
       height,
       _passthroughFields
     )
 
-  override def canEqual(other: Any): Boolean = other.isInstanceOf[ThriftImage]
+  override def canEqual(other: Any): Boolean = other.isInstanceOf[ThriftPixel]
 
-  private def _equals(x: ThriftImage, y: ThriftImage): Boolean =
+  private def _equals(x: ThriftPixel, y: ThriftPixel): Boolean =
       x.productArity == y.productArity &&
       x.productIterator.sameElements(y.productIterator)
 
   override def equals(other: Any): Boolean =
     canEqual(other) &&
-      _equals(this, other.asInstanceOf[ThriftImage]) &&
-      _passthroughFields == other.asInstanceOf[ThriftImage]._passthroughFields
+      _equals(this, other.asInstanceOf[ThriftPixel]) &&
+      _passthroughFields == other.asInstanceOf[ThriftPixel]._passthroughFields
 
   override def hashCode: Int = _root_.scala.runtime.ScalaRunTime._hashCode(this)
 
   override def toString: String = _root_.scala.runtime.ScalaRunTime._toString(this)
 
 
-  override def productArity: Int = 3
+  override def productArity: Int = 2
 
   override def productElement(n: Int): Any = n match {
-    case 0 => this.data
-    case 1 => this.width
-    case 2 => this.height
+    case 0 => this.width
+    case 1 => this.height
     case _ => throw new IndexOutOfBoundsException(n.toString)
   }
 
-  override def productPrefix: String = "ThriftImage"
+  override def productPrefix: String = "ThriftPixel"
 
-  def _codec: ValidatingThriftStructCodec3[ThriftImage] = ThriftImage
+  def _codec: ValidatingThriftStructCodec3[ThriftPixel] = ThriftPixel
 }
 

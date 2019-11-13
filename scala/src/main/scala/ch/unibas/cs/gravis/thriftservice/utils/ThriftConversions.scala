@@ -3,6 +3,16 @@ package ch.unibas.cs.gravis.thriftservice.utils
 import java.lang.Math.{max, min}
 import java.util.Base64
 
+import breeze.linalg.{DenseMatrix, DenseVector}
+import ch.unibas.cs.gravis.realsense._
+import scalismo.color.RGB
+import scalismo.common.{PointId, UnstructuredPointsDomain}
+import scalismo.faces.image.{AccessMode, PixelImage, PixelImageDomain}
+import scalismo.faces.landmarks.TLMSLandmark2D
+import scalismo.geometry._
+import scalismo.mesh.{TriangleCell, TriangleList, TriangleMesh, TriangleMesh3D}
+import scalismo.statisticalmodel.MultivariateNormalDistribution
+
 object ThriftConversions {
 
     /**

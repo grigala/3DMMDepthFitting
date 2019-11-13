@@ -5,11 +5,14 @@ import java.text.{DateFormat, SimpleDateFormat}
 import java.util.{Calendar, Date}
 
 import javax.swing.JLabel
+import scalismo.color.RGB
+import scalismo.faces.sampling.face.loggers.VerbosePrintLogger
+import scalismo.sampling.{DistributionEvaluator, ProposalGenerator}
+import scalismo.sampling.loggers.AcceptRejectLogger
 
 /**
  * Color fitting accept-reject sampling logger
- *
- * @param label        JPanel which is going to be updated
+ * @param label JPanel which is going to be updated
  * @param logToConsole logging into the console
  * @tparam A RenderParameter
  */
@@ -22,7 +25,6 @@ class ImageSamplingLogger[A](label: JLabel, logToConsole: Boolean) extends Accep
     private val verbosePrintLogger = new VerbosePrintLogger[A](Console.out, "")
     private val numAccepted = collection.mutable.Map[String, Int]()
     private val numRejected = collection.mutable.Map[String, Int]()
-
     override def accept(current: A,
                         sample: A,
                         generator: ProposalGenerator[A],
@@ -33,9 +35,7 @@ class ImageSamplingLogger[A](label: JLabel, logToConsole: Boolean) extends Accep
         numAccepted.update(generator.toString, numAcceptedSoFar + 1)
         if (logToConsole) {
             verbosePrintLogger.accept(current, sample, generator, evaluator)
-            Console.withOut(fos) {
-                println(s"A; ${generator.toString}; ${evaluator.logValue(sample)}")
-            }
+            Console.withOut(fos){ println(s"A; ${generator.toString}; ${evaluator.logValue(sample)}")}
         }
         counter += 1
     }
@@ -49,15 +49,13 @@ class ImageSamplingLogger[A](label: JLabel, logToConsole: Boolean) extends Accep
         val numRejectedSoFar = numRejected.getOrElseUpdate(generator.toString, 0)
         numRejected.update(generator.toString, numRejectedSoFar + 1)
         if (logToConsole) {
-            Console.withOut(fos) {
-                println(s"R; ${generator.toString}; ${evaluator.logValue(sample)}")
-            }
+            Console.withOut(fos){ println(s"R; ${generator.toString}; ${evaluator.logValue(sample)}")}
             verbosePrintLogger.reject(current, sample, generator, evaluator)
         }
         counter += 1
     }
 
-    def acceptanceRatios(): Map[String, Double] = {
+    def acceptanceRatios() : Map[String, Double] = {
         val generatorNames: Set[String] = numRejected.keys.toSet.union(numAccepted.keys.toSet)
         val acceptanceRatios: Set[(String, Double)] = for (generatorName <- generatorNames) yield {
             val total = (numAccepted.getOrElse(generatorName, 0)

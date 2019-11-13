@@ -5,6 +5,18 @@ import java.text.{DateFormat, SimpleDateFormat}
 import java.util.Calendar
 
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers._
+import ch.unibas.cs.gravis.thriftservice.utils.Utils._
+import scalismo.color.{RGB, RGBA}
+import scalismo.faces.gui.GUIBlock.label
+import scalismo.faces.gui.ImagePanel
+import scalismo.faces.io.{MoMoIO, PixelImageIO, RenderParameterIO}
+import scalismo.faces.landmarks.LandmarksDrawer
+import scalismo.faces.momo.{MoMo, MoMoBasic}
+import scalismo.faces.parameters._
+import scalismo.faces.sampling.face.MoMoRenderer
+import scalismo.geometry._
+import scalismo.io.{LandmarkIO, MeshIO}
+import scalismo.mesh.{TriangleMesh, VertexColorMesh3D}
 
 
 /**
@@ -72,7 +84,6 @@ object FitScriptOffline extends App {
         guiEnabled = true
     )
 
-    colorFitting
 
     if (DEBUG) {
         val finalFit: VertexColorMesh3D = renderer.renderMesh(colorFitting)

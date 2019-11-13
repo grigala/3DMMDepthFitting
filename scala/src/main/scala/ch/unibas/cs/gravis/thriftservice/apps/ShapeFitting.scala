@@ -4,14 +4,34 @@ import java.awt.Color
 import java.io.{File, FileOutputStream}
 import java.util.Calendar
 
+import breeze.linalg.{DenseMatrix, DenseVector}
 import ch.unibas.cs.gravis.thriftservice.logging.ShapeSamplingLogger
 import ch.unibas.cs.gravis.thriftservice.sampling.evaluators.{ClosestPointEvaluatorCauchy, CorrespondenceEvaluator, PriorEvaluator}
 import ch.unibas.cs.gravis.thriftservice.sampling.proposals.{RotationProposal, ShapeProposal, ShapeProposalICP, TranslationProposal}
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers._
 import ch.unibas.cs.gravis.thriftservice.utils.MoMoHelpers._
 import ch.unibas.cs.gravis.thriftservice.utils.Utils._
+import org.apache.commons.math3.distribution.CauchyDistribution
+import scalismo.color.RGB
+import scalismo.faces.image.PixelImage
+import scalismo.faces.io.renderparameters.RenderParameterJSONFormat._
+import scalismo.faces.io.{MoMoIO, RenderParameterIO}
+import scalismo.faces.momo.MoMo
+import scalismo.faces.parameters._
+import scalismo.geometry._
+import scalismo.io.{LandmarkIO, MeshIO}
+import scalismo.mesh.TriangleMesh
+import scalismo.registration.{LandmarkRegistration, RigidTransformation}
+import scalismo.sampling.algorithms.MetropolisHastings
+import scalismo.sampling.evaluators.ProductEvaluator
+import scalismo.sampling.proposals.MixtureProposal
+import scalismo.statisticalmodel.{MultivariateNormalDistribution, StatisticalMeshModel}
+import scalismo.ui.api.{ScalismoUI, ScalismoUIHeadless}
+import spray.json._
 
 /* ===implicits=== */
+import scalismo.faces.sampling.evaluators.CachedDistributionEvaluator.implicits._
+import scalismo.utils.Random.implicits._
 
 object ShapeFitting {
     def fitShape(modelFile: File,
@@ -20,14 +40,14 @@ object ShapeFitting {
                  targetPCMesh: TriangleMesh[_3D],
                  debug: Boolean,
                  statistics: Boolean): (
-        TriangleMesh[_3D],
-            RenderParameter,
             TriangleMesh[_3D],
-            Map[String, Landmark[_3D]],
-            FileOutputStream,
-            Seq[Landmark[_3D]],
-            Seq[Landmark[_3D]]
-        ) = {
+                    RenderParameter,
+                    TriangleMesh[_3D],
+                    Map[String, Landmark[_3D]],
+                    FileOutputStream,
+                    Seq[Landmark[_3D]],
+                    Seq[Landmark[_3D]]
+            ) = {
 
         println(s"[ShapeFitting] Starting shape fitting pipeline with Debug mode: $debug, and statistics logging: $statistics")
         scalismo.initialize()
@@ -98,7 +118,7 @@ object ShapeFitting {
             println("Number of points after clipping: " + targetMesh.pointSet.numberOfPoints)
         }
         val rigidTransform: RigidTransformation[_3D] = LandmarkRegistration
-            .rigid3DLandmarkRegistration(momoLmsSorted, targetLmsSorted, center = Point(0, 0, 0))
+                .rigid3DLandmarkRegistration(momoLmsSorted, targetLmsSorted, center = Point(0, 0, 0))
 
         // GUI Stuff
         val modelGroup = ui.createGroup("modelGroup")
@@ -185,8 +205,8 @@ object ShapeFitting {
         }
         val bestSample = samples.maxBy(posteriorEvaluator.logValue)
         val bestFit: TriangleMesh[_3D] = transformedModel
-            .instance(bestSample.parameters.modelCoefficients)
-            .transform(bestSample.poseTransformation)
+                .instance(bestSample.parameters.modelCoefficients)
+                .transform(bestSample.poseTransformation)
         val pipeEnd = Calendar.getInstance().getTimeInMillis
         modelGroup.remove()
 

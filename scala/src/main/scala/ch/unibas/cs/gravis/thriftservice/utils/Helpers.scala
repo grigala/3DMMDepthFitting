@@ -1,11 +1,27 @@
 package ch.unibas.cs.gravis.thriftservice.utils
 
 import java.awt.Color
-import java.io.FileOutputStream
+import java.io.{File, FileOutputStream}
 import java.text.{DateFormat, SimpleDateFormat}
 import java.util.{Calendar, Date}
 
+import breeze.linalg.DenseVector
 import ch.unibas.cs.gravis.thriftservice.rendering.{ParametricShader, ZBuffer}
+import scalismo.color.{RGB, RGBA}
+import scalismo.common.{DiscreteField, DiscreteScalarField, DiscreteVectorField, PointId, UnstructuredPointsDomain}
+import scalismo.faces.image.PixelImage
+import scalismo.faces.mesh.ColorNormalMesh3D
+import scalismo.faces.parameters.RenderParameter
+import scalismo.faces.render.{Affine3D, RenderTransforms, TriangleRenderer}
+import scalismo.geometry._
+import scalismo.mesh.{MeshMetrics, MeshSurfaceProperty, ScalarMeshField, TriangleId, TriangleMesh, TriangleMesh3D}
+import scalismo.registration.{LandmarkRegistration, RigidTransformation, RotationTransform, TranslationTransform}
+import scalismo.ui.api.{ScalismoUI, ScalismoUIHeadless}
+import scalismo.faces.io.renderparameters.RenderParameterJSONFormat._
+import scalismo.mesh.boundingSpheres.ClosestPointOnSurface
+import scalismo.utils.Random
+import scalismo.utils.Random._
+import spray.json._
 
 import scala.collection.immutable
 

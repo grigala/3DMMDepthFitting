@@ -2,6 +2,10 @@ package ch.unibas.cs.gravis.thriftservice.scripts
 
 import java.io.File
 
+import scalismo.faces.io.{MoMoIO, TLMSLandmarksIO}
+import scalismo.faces.momo.MoMo
+import scalismo.geometry.{Landmark, _3D}
+
 object AugmentModel extends App {
     scalismo.initialize()
 

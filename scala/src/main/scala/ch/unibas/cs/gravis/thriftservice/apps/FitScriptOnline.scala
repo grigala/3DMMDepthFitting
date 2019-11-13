@@ -4,8 +4,22 @@ import java.io.File
 import java.text.{DateFormat, SimpleDateFormat}
 import java.util.Calendar
 
+import ch.unibas.cs.gravis.realsense.RealSenseService
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers._
 import ch.unibas.cs.gravis.thriftservice.utils.ThriftConversions._
+import ch.unibas.cs.gravis.thriftservice.utils.Utils._
+import com.twitter.finagle.Thrift
+import com.twitter.util.{Await, Future}
+import scalismo.color.{RGB, RGBA}
+import scalismo.faces.image.PixelImage
+import scalismo.faces.io.{MoMoIO, PixelImageIO}
+import scalismo.faces.landmarks.TLMSLandmark2D
+import scalismo.faces.momo.MoMo
+import scalismo.faces.parameters._
+import scalismo.faces.sampling.face.MoMoRenderer
+import scalismo.geometry._
+import scalismo.io.{LandmarkIO, MeshIO}
+import scalismo.mesh.{TriangleMesh, VertexColorMesh3D}
 
 
 /**
