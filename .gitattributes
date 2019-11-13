@@ -1,3 +1,2 @@
-* lingust-vendored
-*.scala linguist-vendored=false
+scala/docs/* lingust-vendored=false
 
