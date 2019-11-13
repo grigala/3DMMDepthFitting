@@ -20,8 +20,6 @@ case class ClosestPointEvaluatorCauchy(model: StatisticalMeshModel,
     // 0.3 -> ~37k, 0.6 -> ~21k, 0.9 -> ~5k points
     // The number of points on the original face model is ~28k, 0.9 decimation rate yields -> 2918pts
 
-    // It is important to note that the amount of sampled reference points should be closely monitored
-    // depending on decimation rate, as decimated model might not have the number of points you want to sample.
     val modelDec: StatisticalMeshModel = DecimateModel.decimate(model, 0.95)
     val referencePoints: IndexedSeq[Point[_3D]] = UniformMeshSampler3D(modelDec.referenceMesh, 500).sample().map(_._1)
 

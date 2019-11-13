@@ -175,13 +175,6 @@ object Helpers {
         }
     }
 
-
-    //    val targetMesh = MeshIO.readMesh(new File("targetData/targetMesh.ply")).get
-    //    val targetLandmarks = LandmarkIO.readLandmarksJson[_3D](new File("targetData/target3DLandmarks.json")).get
-
-    //    val gtMesh = MeshIO.readMesh(new File("data/neutralMe.ply")).get
-    //    val gtLandmarks = LandmarkIO.readLandmarksJson[_3D](new File("data/gtLandmarks.json")).get
-
     /**
      * Performs rigid3DLandmarkRegistration iteratively
      *
