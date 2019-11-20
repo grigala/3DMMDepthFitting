@@ -1,21 +1,31 @@
 # Efficient 3D Morphable Model Face Fitting Using Depth Sensing Technologies
 
 This is the root directory for the project we've implemented as part of my MSc work. It performs a 3D Morphable Model face fitting and as a result produces a dense 3D face reconstructions based on a single image and the depth information obtained from the camera.
- 
- 
+
+Read the thesis [here](https://github.com/grigala/MScThesis/Thesis.pdf).
+
+
 Project contains two language specific modules Python server and the Scala client. The server handles all the camera related operations, including configuration, data acquisition and delivery for fitting pipeline.
 
-If you do not have a dedicated camera [FitScriptOffline.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/apps/FitScriptOffline.scala) is your starting point. 
+If you do not have a dedicated camera, [FitScriptOffline.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/apps/FitScriptOffline.scala) is your starting point. 
 
 Otherwise, first you should run [Server.py](python/Server.py) and then [FitScriptOnline.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/apps/FitScriptOnline.scala)
 
 
 
-Example result:
+DEMO:
 
-![](./sample.png)
-
-
+<div style="text-align:center;">
+    <img src="./demo/target.png" width="130", height="130">
+    <span style="font-size: 3em;" >+</span>
+    <img src="./demo/lms.gif"width="120", height="120">
+    <span style="font-size: 3em;">+</span>                
+    <img src="./demo/mesh.gif" width="120", height="120">
+    <span style="font-size: 3em;">→</span>
+    <img src="./demo/fitting.gif" width="100", height="100">
+    <span style="font-size: 3em;">→</span>
+    <img src="./demo/fit.png" width="130", height="130">
+</div>
 
 ## Technology Stack & Credits
 
@@ -50,4 +60,4 @@ The code is distributed under GNU General Public License v3.0, refer to [LICENSE
 
 ## References
 
-`TODO`
+Refer to the last pages of the  [thesis](https://github.com/grigala/MScThesis/Thesis.pdf).
