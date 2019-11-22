@@ -28,6 +28,8 @@ The pipeline is flexible enough that it can be seamlessly integrated into the ex
 The applications of this work include but not limited to  [Photo-realistic Face Manipulation](https://gravis.dmi.unibas.ch/PMM/demo/face-manipulation/), 
 3D face modelling and analysis.
 
+---
+
 Project contains two language specific modules Python server and the Scala client. 
 The server handles all the camera related operations, including configuration, data acquisition and delivery for fitting pipeline.
 
