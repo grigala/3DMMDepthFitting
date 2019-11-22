@@ -3,7 +3,8 @@
 This is the root directory for the project we've implemented as part of my MSc work. It performs a 3D Morphable Model face fitting and as a result produces a dense 3D face reconstructions based on a single image and the depth information obtained from the camera.
 
 Read the thesis [here](https://github.com/grigala/MScThesis/Thesis.pdf).
-###Abstract
+
+### Abstract
 Human face analysis is an important branch of Computer Vision. One of the interesting topics in this 
 area of research is the analysis of a human face based on a single image. The complexity of this problem 
 is rather high due to restricted information that is available in a single image. Especially challenging 
