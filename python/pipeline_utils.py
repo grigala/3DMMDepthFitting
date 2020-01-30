@@ -113,10 +113,22 @@ def landmark_detector(img):
                          57, 62, 18, 33, 23, 25, 30, 20, 51, 35, 54]
 
     faces = detector(img, 1)
+    max_area, largest_face = 0, None
+
     if not faces:
         raise Exception('No face detected. Try again...')
+    elif len(faces) == 1:
+        print('[pipeline_utils] A single face detected...')
+        largest_face = faces[0]
+    else:
+        print("[pipeline_utils] More than one face detected, the largest(closest) one will be used...")
+        for i, f in enumerate(faces):
+            face_area = (f.top() - f.bottom()) * (f.left() - f.right())
+            if face_area > max_area:
+                max_area = face_area
+                largest_face = f
 
-    shape = predictor(img, faces[0])
+    shape = predictor(img, largest_face)
     # For every landmark replacing dlib landmark id with
     # pixel information signature (str(name, pixel(w, h)) Example:
     # "right.eye.corner_inner": 39 -> "right.eye.corner_inner": (200, 200)
