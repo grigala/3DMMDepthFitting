@@ -2,7 +2,7 @@
 
 This is the root directory for the project we've implemented as part of my MSc work. It performs a 3D Morphable Model face fitting and as a result produces a dense 3D face reconstructions based on a single image and the depth information obtained from the camera.
 
-Read the thesis [here](https://github.com/grigala/MScThesis/Thesis.pdf).
+Read the thesis [here](https://github.com/grigala/MScThesis/blob/master/Thesis.pdf).
 
 ### Abstract
 Human face analysis is an important branch of Computer Vision. One of the interesting topics in this 
@@ -37,7 +37,7 @@ If you do not have a dedicated camera, [FitScriptOffline.scala](scala/src/main/s
 
 Otherwise, first you should run [Server.py](python/Server.py) and then [FitScriptOnline.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/apps/FitScriptOnline.scala)
 
-
+> Note: You cannot run the code without having Basel Face Model (BFM) in `/data` directory inside the Scala project root. You can obtain a copy of BFM from [this](http://gravis.dmi.unibas.ch/PMM/data/overview/) website. You then have to augment the model with an additional chin landmarks which are stored in [landmarks.txt](/scala/data/landmarks.txt) file, using the script [AugmentModel.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/scripts/AugmentModel.scala). 
 
 DEMO:
 ![](demo/combined.gif)
@@ -47,10 +47,10 @@ DEMO:
 This work would not have been possible without the following Open Source projects:
 ### Server-side:
 
-* [Python 3](https://www.python.org/)
-* [OpenCV (Python)](https://opencv.org/)
+* [Python 3](https://www.python.org)
+* [OpenCV (Python)](https://opencv.org)
 * [librealsense (Python Wrapper)](https://github.com/IntelRealSense/librealsense)
-* [dlib (Python)](http://dlib.net/)
+* [dlib (Python)](http://dlib.net)
 * [Apache Thrift](https://github.com/apache/thrift)
 * [Numpy](https://github.com/numpy/numpy)
 
@@ -65,6 +65,7 @@ This work would not have been possible without the following Open Source project
 * [Scalismo-faces](https://github.com/unibas-gravis/scalismo-faces)
 * [Scalismo-ui](https://github.com/unibas-gravis/scalismo-ui)
 * [Scalismo Tutorials](https://scalismo.org/tutorials)
+* [Probabilistic Fitting](http://gravis.dmi.unibas.ch/PMM/lectures/fitting)
 
 
 ## Copyright and License
@@ -75,4 +76,4 @@ The code is distributed under GNU General Public License v3.0, refer to [LICENSE
 
 ## References
 
-Refer to the last pages of the  [thesis](https://github.com/grigala/MScThesis/Thesis.pdf).
+Refer to the last pages of the  [thesis](https://github.com/grigala/MScThesis/blob/master/Thesis.pdf).
