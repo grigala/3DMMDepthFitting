@@ -35,7 +35,7 @@ The server handles all the camera related operations, including configuration, d
 
 If you do not have a dedicated camera, [FitScriptOffline.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/apps/FitScriptOffline.scala) is your starting point. 
 
-Otherwise, first you should run [Server.py](python/Server.py) and then [FitScriptOnline.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/apps/FitScriptOnline.scala)
+Otherwise, first you should run [Server.py](scala/src/main/resources/python/Server.py) and then [FitScriptOnline.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/apps/FitScriptOnline.scala)
 
 > Note: You cannot run the code without having Basel Face Model (BFM) in `/data` directory inside the Scala project root. You can obtain a copy of BFM from [this](http://gravis.dmi.unibas.ch/PMM/data/overview/) website. You then have to augment the model with an additional chin landmarks which are stored in [landmarks.txt](/scala/data/landmarks.txt) file, using the script [AugmentModel.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/scripts/AugmentModel.scala). 
 
