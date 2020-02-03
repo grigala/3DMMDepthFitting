@@ -23,7 +23,7 @@ import scalismo.faces.parameters._
 import scalismo.faces.sampling.face.evaluators.PixelEvaluators.IsotropicGaussianPixelEvaluator
 import scalismo.faces.sampling.face.evaluators.PointEvaluators.IsotropicGaussianPointEvaluator
 import scalismo.faces.sampling.face.evaluators.PriorEvaluators.{GaussianShapePrior, GaussianTexturePrior}
-import scalismo.faces.sampling.face.evaluators.{CollectiveLikelihoodEvaluator, HistogramRGB, ImageRendererEvaluator, IndependentPixelEvaluator}
+import scalismo.faces.sampling.face.evaluators.{CollectiveLikelihoodEvaluator, HistogramRGB, ImageRendererEvaluator, IndependentPixelEvaluator, PixelEvaluators}
 import scalismo.faces.sampling.face.loggers._
 import scalismo.faces.sampling.face.proposals.SphericalHarmonicsLightProposals._
 import scalismo.faces.sampling.face.proposals._
@@ -53,7 +53,7 @@ object ColorFitting {
 
     scalismo.initialize()
 
-    val DEBUG: Boolean = true
+    val DEBUG: Boolean = false
     val dateFormat: DateFormat = new SimpleDateFormat("HH-mm-ss, MMM dd")
     val date: Date = Calendar.getInstance().getTime
     val saveTime: String = dateFormat.format(date)
@@ -80,7 +80,8 @@ object ColorFitting {
         val centerRLipsProposal = poseMovingNoTransProposal.centeredAt("right.lips.corner", lmRenderer).get
         val centerLLipsProposal = poseMovingNoTransProposal.centeredAt("left.lips.corner", lmRenderer).get
 
-        MixtureProposal(centerREyeProposal + centerLEyeProposal + centerRLipsProposal + centerLLipsProposal + 0.2 *: translationProposal)
+//        MixtureProposal(rotationProposal + translationProposal)
+        MixtureProposal(centerREyeProposal + centerLEyeProposal + centerRLipsProposal + centerLLipsProposal + translationProposal)
     }
 
     /* Collection of all statistical model (shape, texture) related proposals */
@@ -165,7 +166,9 @@ object ColorFitting {
                  initRPS: RenderParameter,
                  outputDir: String,
                  modelFile: File,
-                 guiEnabled: Boolean = false): RenderParameter = {
+                 guiEnabled: Boolean = false,
+                numIterations: Int = 100
+                ): RenderParameter = {
 
         val startColorFittingModule = System.currentTimeMillis()
         val outputFolder: File = new File(outputDir)
@@ -199,7 +202,7 @@ object ColorFitting {
         val priorEvaluator = ProductEvaluator(texturePrior, shapePrior)
 
         val foregroundPixelEvaluator: IsotropicGaussianPixelEvaluator = IsotropicGaussianPixelEvaluator(sdev)
-        //        val constantPixelEvaluator = PixelEvaluators.ConstantPixelEvaluator[RGB](4.68)
+        val constantPixelEvaluator = PixelEvaluators.ConstantPixelEvaluator[RGB](4.68)
         val histogramBGEvaluator = HistogramRGB.fromImageRGBA(targetImage, 25)
         val pixelEvaluator = IndependentPixelEvaluator(foregroundPixelEvaluator, histogramBGEvaluator)
         val imageEvaluator = ImageRendererEvaluator(renderer, pixelEvaluator.toDistributionEvaluator(targetImage))
@@ -216,13 +219,22 @@ object ColorFitting {
         val momoProposal = if (expression) defaultMorphableModelProposal else neutralMorphableModelProposal
         val colorProposal = defaultColorProposal
         val lightProposal = defaultIlluminationProposal(renderer, targetImage)
+//        val fullFittingProposal = MetropolisFilterProposal(
+//            MetropolisFilterProposal(
+//                MixtureProposal(
+//                    totalPose +
+//                            momoProposal +
+//                            2f *: colorProposal +
+//                            2f *: lightProposal
+//                ),
+//                landmarksEvaluator
+//            ),
+//            priorEvaluator
+//        )
         val fullFittingProposal = MetropolisFilterProposal(
             MetropolisFilterProposal(
                 MixtureProposal(
-                    totalPose +
-                            momoProposal +
-                            2f *: colorProposal +
-                            2f *: lightProposal
+                    totalPose
                 ),
                 landmarksEvaluator
             ),
@@ -252,17 +264,19 @@ object ColorFitting {
             ).displayIn("GUI Logger")
         }
 
-        val guiLogger: ImageSamplingLogger[RenderParameter] = ImageSamplingLogger[RenderParameter](guiLabel, logToConsole = true)
-
+        val guiLogger: ImageSamplingLogger[RenderParameter] = ImageSamplingLogger[RenderParameter](guiLabel, logToConsole = false)
+        var count = 0
         val renderLogger = new ChainStateLogger[RenderParameter] {
             override def logState(sample: RenderParameter): Unit = {
                 val currentBestFit: PixelImage[RGBA] = renderer.renderImage(sample)
                 val blended = overlayImages(targetImage, currentBestFit)
+//                PixelImageIO.write[RGBA](blended, new File(s"output/img_$count.png"))
+                count += 1
                 imagePanel.updateImage(blended)
             }
         }
         val fullFittingLogger = ChainStateLoggerContainer(Seq(
-            renderLogger.subSampled(100),
+            renderLogger.subSampled(500),
             bestLogger,
             //bestRPSFileLogger
         ))
@@ -279,7 +293,7 @@ object ColorFitting {
         }
 
         val fullChainIterator = imageFitter.iterator(initialParameters, guiLogger)
-        val fullFittingSamples = fullChainIterator.take(10000).loggedWith(fullFittingLogger).toIndexedSeq
+        val fullFittingSamples = fullChainIterator.take(numIterations).loggedWith(fullFittingLogger).toIndexedSeq
 
         val bestSample: RenderParameter = bestLogger.currentBestSample().get
         // In case you work with low-res image let RPS know to render it back in original resolution

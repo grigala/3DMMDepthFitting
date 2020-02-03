@@ -6,13 +6,16 @@ import java.util.Calendar
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import ch.unibas.cs.gravis.thriftservice.logging.ShapeSamplingLogger
+import ch.unibas.cs.gravis.thriftservice.rendering.{AugmentedMoMoRenderer, InjectExtrinsicParameters}
+import ch.unibas.cs.gravis.thriftservice.sampling.algorithms.FastMetropolisHastings
 import ch.unibas.cs.gravis.thriftservice.sampling.evaluators.{ClosestPointEvaluatorCauchy, CorrespondenceEvaluator, PriorEvaluator}
 import ch.unibas.cs.gravis.thriftservice.sampling.proposals.{RotationProposal, ShapeProposal, ShapeProposalICP, TranslationProposal}
 import ch.unibas.cs.gravis.thriftservice.utils.Helpers._
 import ch.unibas.cs.gravis.thriftservice.utils.MoMoHelpers._
 import ch.unibas.cs.gravis.thriftservice.utils.Utils._
 import org.apache.commons.math3.distribution.CauchyDistribution
-import scalismo.color.RGB
+import scalismo.color.{RGB, RGBA}
+import scalismo.faces.gui.ImagePanel
 import scalismo.faces.image.PixelImage
 import scalismo.faces.io.renderparameters.RenderParameterJSONFormat._
 import scalismo.faces.io.{MoMoIO, RenderParameterIO}
@@ -32,6 +35,7 @@ import spray.json._
 /* ===implicits=== */
 import scalismo.faces.sampling.evaluators.CachedDistributionEvaluator.implicits._
 import scalismo.utils.Random.implicits._
+import scalismo.faces.gui.GUIBlock._
 
 object ShapeFitting {
     def fitShape(modelFile: File,
@@ -39,15 +43,16 @@ object ShapeFitting {
                  target3DLandmarks: Seq[Landmark[_3D]],
                  targetPCMesh: TriangleMesh[_3D],
                  debug: Boolean,
-                 statistics: Boolean): (
+                 statistics: Boolean,
+                 numIterations: Int = 300
+                ): (
+        TriangleMesh[_3D],
+            RenderParameter,
             TriangleMesh[_3D],
-                    RenderParameter,
-                    TriangleMesh[_3D],
-                    Map[String, Landmark[_3D]],
-                    FileOutputStream,
-                    Seq[Landmark[_3D]],
-                    Seq[Landmark[_3D]]
-            ) = {
+            Map[String, Landmark[_3D]],
+            Seq[Landmark[_3D]],
+            Seq[Landmark[_3D]]
+        ) = {
 
         println(s"[ShapeFitting] Starting shape fitting pipeline with Debug mode: $debug, and statistics logging: $statistics")
         scalismo.initialize()
@@ -112,13 +117,13 @@ object ShapeFitting {
         val discardPointsInBetweenTargetAndCamera = yNegativeClippedMesh.operations.clip(pt => pt.z < zMinClippingValue - 10)
         val targetMesh = discardPointsInBetweenTargetAndCamera.operations.clip(pt => pt.z > zMaxClippingValue)
 
-        MeshIO.writeMesh(targetMesh, new File(s"targetData/gen/mesh/targetMesh_$saveTime.ply"))
+        //MeshIO.writeMesh(targetMesh, new File(s"targetData/gen/mesh/targetMesh_$saveTime.ply"))
         if (debug) {
             MeshIO.writeMesh(targetTriangleMesh, new File(s"targetData/gen/mesh/targetMeshUnClipped_$saveTime.ply"))
             println("Number of points after clipping: " + targetMesh.pointSet.numberOfPoints)
         }
         val rigidTransform: RigidTransformation[_3D] = LandmarkRegistration
-                .rigid3DLandmarkRegistration(momoLmsSorted, targetLmsSorted, center = Point(0, 0, 0))
+            .rigid3DLandmarkRegistration(momoLmsSorted, targetLmsSorted, center = Point(0, 0, 0))
 
         // GUI Stuff
         val modelGroup = ui.createGroup("modelGroup")
@@ -199,14 +204,14 @@ object ShapeFitting {
             sample
         }
 
-        val samples = samplingIterator.slice(50, 500).toIndexedSeq
+        val samples = samplingIterator.slice(50, numIterations).toIndexedSeq
         if (debug) {
             println(s"acceptanceRatios = ${logger.acceptanceRatios()}")
         }
         val bestSample = samples.maxBy(posteriorEvaluator.logValue)
         val bestFit: TriangleMesh[_3D] = transformedModel
-                .instance(bestSample.parameters.modelCoefficients)
-                .transform(bestSample.poseTransformation)
+            .instance(bestSample.parameters.modelCoefficients)
+            .transform(bestSample.poseTransformation)
         val pipeEnd = Calendar.getInstance().getTimeInMillis
         modelGroup.remove()
 
@@ -240,39 +245,27 @@ object ShapeFitting {
         val bestFitLms: Seq[Landmark[_3D]] = momoLmsSorted.map(
             lm => Landmark(lm.id, bestRenderParameters.pose.transform.apply(lm.point), lm.description, lm.uncertainty)
         )
-        val fos: FileOutputStream = new FileOutputStream(new File(s"dataset/results/stats/stats_$saveTime.txt"))
-        if (statistics) {
-            // Computing average distances between target mesh and best fit
-            Console.withOut(fos) {
-                println(s"- custom average distance, bestFit -> target = ${customAVGDistance(bestFit, targetMesh)}")
-                println(s"- custom hausdorff distance target(ignores boundary points) -> bestFit = ${hausdorffDistance(bestFit, targetMesh)}")
-            }
-            val gtMesh = MeshIO.readMesh(new File("data/neutralMe.ply")).get
-            val gtLandmarks = LandmarkIO.readLandmarksJson[_3D](new File("data/gtLandmarks.json")).get
+        val test = false
+        // Test alignment
+        if (test) {
+            val renderer: AugmentedMoMoRenderer = AugmentedMoMoRenderer(momoModel.neutralModel, RGBA.BlackTransparent).cached(10)
+            val targetPanel = ImagePanel(targetImageRGBA)
+            val imagePanel = ImagePanel(targetImageRGBA)
+            stack(
+                shelf(
+                    stack(targetPanel, label("target image")),
+                    stack(imagePanel, label("current image")),
+                )
+            ).displayIn("GUI")
 
-            // Patrick
-            //val gtMesh = MeshIO.readMesh(new File("data/patrick_neutral.ply")).get
-            //val gtLandmarks = LandmarkIO.readLandmarksJson[_3D](new File("data/gtLandmarksPatrick.json")).get
-
-            // Dana
-            //val gtMesh = MeshIO.readMesh(new File("data/dana_neutral.ply")).get
-            //val gtLandmarks = LandmarkIO.readLandmarksJson[_3D](new File("data/gtLandmarksDana.json")).get
-
-            Console.withOut(fos) {
-                println("\n> aligning best fit and ground truth...")
-                alignMeshesICP(bestFit, bestFitLms, gtMesh, gtLandmarks, fos)
-
-            }
-
-            val shapeFittingEnd = System.currentTimeMillis()
-            val t = shapeFittingEnd - shapeFittingStart
-            Console.withOut(fos) {
-                println(s"Elapsed time: $t ms -> ${t / 60000}m")
-            }
+            val bf = renderer.renderImage(bestRenderParameters)
+            val bf2 = renderer.renderImage(InjectExtrinsicParameters(bestRenderParameters))
+            val blend = overlayImages(targetImageRGBA, bf)
+            val blend2 = overlayImages(targetImageRGBA, bf2)
+            imagePanel.updateImage(blend)
         }
 
-
-        (targetMesh, bestRenderParameters, bestFit, target3DLM, fos, momoLmsSorted, bestFitLms)
+        (targetMesh, bestRenderParameters, bestFit, target3DLM, momoLmsSorted, bestFitLms)
     }
 }
 

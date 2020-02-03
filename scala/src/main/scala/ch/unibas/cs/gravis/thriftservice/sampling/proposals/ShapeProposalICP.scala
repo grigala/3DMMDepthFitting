@@ -18,7 +18,7 @@ case class ShapeProposalICP(model: StatisticalMeshModel,
                             stepLength: Double)(implicit val rng: scalismo.utils.Random) extends
         ProposalGenerator[Sample] with TransitionProbability[Sample] {
 
-    val targetMeshPoints: IndexedSeq[Point[_3D]] = UniformMeshSampler3D(targetMesh, 1000).sample().map(_._1)
+    val targetMeshPoints: IndexedSeq[Point[_3D]] = UniformMeshSampler3D(targetMesh, 500).sample().map(_._1)
     val decimatedModel: StatisticalMeshModel = DecimateModel.decimate(model, 0.95)
     val referenceMesh: TriangleMesh[_3D] = decimatedModel.referenceMesh
     val gpInterpolated: LowRankGaussianProcess[_3D, EuclideanVector[_3D]] = decimatedModel.gp.interpolateNearestNeighbor

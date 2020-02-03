@@ -18,9 +18,9 @@ case class CauchyMoMoShapeEvaluator(model: MoMo,
     extends DistributionEvaluator[RenderParameter] {
 
     val ssm: StatisticalMeshModel = MoMoHelpers.convertMoMoToSMM(model)
-    val decimatedModel: StatisticalMeshModel = DecimateModel.decimate(ssm, 0.9)
+    val decimatedModel: StatisticalMeshModel = DecimateModel.decimate(ssm, 0.95)
 
-    val referencePoints: IndexedSeq[Point[_3D]] = UniformMeshSampler3D(model.referenceMesh, 500).sample().map(_._1)
+    val referencePoints: IndexedSeq[Point[_3D]] = UniformMeshSampler3D(model.referenceMesh, 100).sample().map(_._1)
 
     val modelIds: IndexedSeq[PointId] = referencePoints.map(refPt => model.referenceMesh.pointSet.findClosestPoint(refPt).id)
 

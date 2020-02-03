@@ -1,7 +1,0 @@
-Pillow
-pyrealsense2
-numpy
-matplotlib
-mlxtend
-dlib
-opencv-python

@@ -29,8 +29,8 @@ import scalismo.mesh.{TriangleMesh, VertexColorMesh3D}
 object FitScriptOnline extends App {
 
     scalismo.initialize()
-    val DEBUG = true
-    val STATS = true
+    val DEBUG = false
+    val STATS = false
     val dateFormat: DateFormat = new SimpleDateFormat("HH-mm-ss, MMM dd")
     val date = Calendar.getInstance().getTime
     val saveTime = dateFormat.format(date)
@@ -38,7 +38,7 @@ object FitScriptOnline extends App {
     /** ************************************ Server Stuff ********************************/
     val requestStart = Calendar.getInstance().getTimeInMillis
     val client = Thrift.client.withBufferedTransport.newIface[RealSenseService[Future]]("127.0.0.1:9000")
-    val captureFuture = client.capture()
+    val captureFuture = client.capture(true)
     val captureResult = Await.result(captureFuture)
     val requestEnd = Calendar.getInstance().getTimeInMillis
     println(s"Request-response took: ${requestEnd - requestStart}ms")
@@ -64,13 +64,14 @@ object FitScriptOnline extends App {
     val targetLmsSorted: Seq[Landmark[_3D]] = targetLandmarks.sortBy(lm => lm.id)
 
     /* Shape Fitting */
-    val (targetMesh, bestRenderParameters, shapeFit, target3DLms, fos, momoLmsSorted, bestFitLms) = ShapeFitting.fitShape(
+    val (targetMesh, bestRenderParameters, shapeFit, target3DLms, momoLmsSorted, bestFitLms) = ShapeFitting.fitShape(
         modelFile,
         image,
         targetLmsSorted,
         targetTriangleMesh,
         DEBUG,
-        STATS
+        STATS,
+        numIterations = 1000
     )
     /* Color Fitting */
     val colorFitting: RenderParameter = ColorFitting.fitColor(
@@ -81,7 +82,8 @@ object FitScriptOnline extends App {
         initRPS = bestRenderParameters,
         outputDir = "logging/",
         modelFile = modelFile,
-        guiEnabled = true
+        guiEnabled = true,
+        numIterations = 10000
     )
 
     if (STATS) {
@@ -93,11 +95,11 @@ object FitScriptOnline extends App {
         val gtMesh = MeshIO.readMesh(new File("data/neutralMe.ply")).get
         val gtLandmarks = LandmarkIO.readLandmarksJson[_3D](new File("data/gtLandmarks.json")).get
 
-        Console.withOut(fos) {
-            println("\n> ===final best fit and ground truth===")
-            alignMeshesICP(finalFit.shape, finalFitLandmarks, gtMesh, gtLandmarks, fos)
-            println("\n> ===final best fit and target mesh===")
-            //            alignMeshesICP(finalFit.shape, finalFitLandmarks, targetMesh, best, fos)
-        }
+//        Console.withOut(fos) {
+//            println("\n> ===final best fit and ground truth===")
+//            alignMeshesICP(finalFit.shape, finalFitLandmarks, gtMesh, gtLandmarks, fos)
+//            println("\n> ===final best fit and target mesh===")
+//            //            alignMeshesICP(finalFit.shape, finalFitLandmarks, targetMesh, best, fos)
+//        }
     }
 }
