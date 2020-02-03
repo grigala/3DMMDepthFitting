@@ -21,7 +21,7 @@ class ImageSamplingLogger[A](label: JLabel, logToConsole: Boolean) extends Accep
     private val dateFormat: DateFormat = new SimpleDateFormat("HH-mm-ss, MMM dd")
     private val date: Date = Calendar.getInstance().getTime
     private val saveTime: String = dateFormat.format(date)
-    private val fos = new FileOutputStream(new File(s"logging/logs/log_$saveTime.txt"))
+//    private val fos = new FileOutputStream(new File(s"logging/logs/log_$saveTime.txt"))
     private val verbosePrintLogger = new VerbosePrintLogger[A](Console.out, "")
     private val numAccepted = collection.mutable.Map[String, Int]()
     private val numRejected = collection.mutable.Map[String, Int]()
@@ -35,7 +35,7 @@ class ImageSamplingLogger[A](label: JLabel, logToConsole: Boolean) extends Accep
         numAccepted.update(generator.toString, numAcceptedSoFar + 1)
         if (logToConsole) {
             verbosePrintLogger.accept(current, sample, generator, evaluator)
-            Console.withOut(fos){ println(s"A; ${generator.toString}; ${evaluator.logValue(sample)}")}
+//            Console.withOut(fos){ println(s"A; ${generator.toString}; ${evaluator.logValue(sample)}")}
         }
         counter += 1
     }
@@ -49,7 +49,7 @@ class ImageSamplingLogger[A](label: JLabel, logToConsole: Boolean) extends Accep
         val numRejectedSoFar = numRejected.getOrElseUpdate(generator.toString, 0)
         numRejected.update(generator.toString, numRejectedSoFar + 1)
         if (logToConsole) {
-            Console.withOut(fos){ println(s"R; ${generator.toString}; ${evaluator.logValue(sample)}")}
+//            Console.withOut(fos){ println(s"R; ${generator.toString}; ${evaluator.logValue(sample)}")}
             verbosePrintLogger.reject(current, sample, generator, evaluator)
         }
         counter += 1

@@ -21,27 +21,27 @@ class InjectExtrinsicParameters(pose: Pose,
                                 cT: ColorTransform)
         extends RenderParameter(pose, view, camera, envMap, dirLight, momo, imageSize, cT) {
 
+    /* Depth modules extrinsic parameters for 640x480 resolution */
+    val depthExtrinsics = Affine3D.apply(
+        SquareMatrix(Array(
+            0.999976, 0.000557234, -0.00697231,
+            -0.000544951, 0.999998, 0.00176348,
+            0.00697328, -0.00175964, 0.999974
+        )),
+        geometry.EuclideanVector3D(0.0150543, 0.000121441, -0.00041644)
+    )
+
+    /* Color modules extrinsic parameters for 640x480 resolution */
+    val colorExtrinsics = Affine3D.apply(
+        SquareMatrix(Array(
+            0.999976, -0.000544951, 0.00697328,
+            0.000557234, 0.999998, -0.00175964,
+            -0.00697231, 0.00176348, 0.999974
+        )),
+        geometry.EuclideanVector3D(-0.0150569, -0.000112502, 0.000311666)
+    )
+
     override def modelViewTransform: Affine3D = {
-
-        /* Depth modules extrinsic parameters for 640x480 resolution */
-        val depthExtrinsics = Affine3D.apply(
-            SquareMatrix(Array(
-                0.999976, 0.000557234, -0.00697231,
-                -0.000544951, 0.999998, 0.00176348,
-                0.00697328, -0.00175964, 0.999974
-            )),
-            geometry.EuclideanVector3D(0.0150543, 0.000121441, -0.00041644)
-        )
-
-        /* Color modules extrinsic parameters for 640x480 resolution */
-        val colorExtrinsics = Affine3D.apply(
-            SquareMatrix(Array(
-                0.999976, -0.000544951, 0.00697328,
-                0.000557234, 0.999998, -0.00175964,
-                -0.00697231, 0.00176348, 0.999974
-            )),
-            geometry.EuclideanVector3D(-0.0150569, -0.000112502, 0.000311666)
-        )
 
         /**
          * This will shift the rendered object left and right depending on which extrinsic parameters you use
@@ -55,6 +55,17 @@ class InjectExtrinsicParameters(pose: Pose,
          */
         view.viewTransform compose colorExtrinsics compose pose.transform
     }
+
+    def rps: RenderParameter = new RenderParameter(
+        pose = pose,
+        view = view,
+        camera = camera,
+        environmentMap =  envMap,
+        directionalLight = dirLight,
+        momo = momo,
+        imageSize = imageSize,
+        colorTransform = cT
+    )
 }
 
 object InjectExtrinsicParameters {

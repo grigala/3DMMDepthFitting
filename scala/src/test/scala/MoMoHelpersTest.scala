@@ -1,8 +1,18 @@
 
 import java.io.File
 
-import ch.unibas.cs.gravis.thriftservice.utils.Helpers.Parameters
+import breeze.linalg.DenseVector
 import ch.unibas.cs.gravis.thriftservice.utils.MoMoHelpers
+import ch.unibas.cs.gravis.thriftservice.utils.Helpers.Parameters
+import org.scalatest.{FunSpec, FunSuite}
+import scalismo.faces.io.MoMoIO
+import scalismo.faces.momo.MoMo
+import scalismo.faces.parameters.{MoMoInstance, Pose, RenderParameter}
+import scalismo.geometry.{EuclideanVector, EuclideanVector3D}
+import scalismo.io.StatismoIO
+import scalismo.statisticalmodel.StatisticalMeshModel
+import scalismo.faces.io.renderparameters.RenderParameterJSONFormat._
+import spray.json._
 
 class MoMoHelpersTest extends FunSuite {
 

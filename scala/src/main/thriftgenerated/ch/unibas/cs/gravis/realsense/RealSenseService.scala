@@ -46,7 +46,7 @@ import scala.language.higherKinds
 @javax.annotation.Generated(value = Array("com.twitter.scrooge.Compiler"))
 trait RealSenseService[+MM[_]] extends ThriftService {
   
-  def capture(): MM[ch.unibas.cs.gravis.realsense.CaptureResult]
+  def capture(gui: Boolean): MM[ch.unibas.cs.gravis.realsense.CaptureResult]
 
   /**
    * Used to close the underlying `Service`.
@@ -229,11 +229,24 @@ object RealSenseService { self =>
     object Args extends ValidatingThriftStructCodec3[Args] {
       val NoPassthroughFields: immutable$Map[Short, TFieldBlob] = immutable$Map.empty[Short, TFieldBlob]
       val Struct = new TStruct("capture_args")
+      val GuiField = new TField("gui", TType.BOOL, 1)
+      val GuiFieldManifest = implicitly[Manifest[Boolean]]
     
       /**
        * Field information in declaration order.
        */
       lazy val fieldInfos: scala.List[ThriftStructFieldInfo] = scala.List[ThriftStructFieldInfo](
+        new ThriftStructFieldInfo(
+          GuiField,
+          false,
+          false,
+          GuiFieldManifest,
+          _root_.scala.None,
+          _root_.scala.None,
+          immutable$Map.empty[String, String],
+          immutable$Map.empty[String, String],
+          None
+        )
       )
     
       lazy val structAnnotations: immutable$Map[String, String] =
@@ -252,11 +265,17 @@ object RealSenseService { self =>
       def validateNewInstance(item: Args): scala.Seq[com.twitter.scrooge.validation.Issue] = {
         val buf = scala.collection.mutable.ListBuffer.empty[com.twitter.scrooge.validation.Issue]
     
+        buf ++= validateField(item.gui)
         buf.toList
       }
     
       def withoutPassthroughFields(original: Args): Args =
         new Args(
+          gui =
+            {
+              val field = original.gui
+              field
+            }
         )
     
       override def encode(_item: Args, _oproto: TProtocol): Unit = {
@@ -265,6 +284,7 @@ object RealSenseService { self =>
     
     
       override def decode(_iprot: TProtocol): Args = {
+        var gui: Boolean = false
         var _passthroughFields: Builder[(Short, TFieldBlob), immutable$Map[Short, TFieldBlob]] = null
         var _done = false
     
@@ -275,6 +295,19 @@ object RealSenseService { self =>
             _done = true
           } else {
             _field.id match {
+              case 1 =>
+                _field.`type` match {
+                  case TType.BOOL =>
+                    gui = readGuiValue(_iprot)
+                  case _actualType =>
+                    val _expectedType = TType.BOOL
+                    throw new TProtocolException(
+                      "Received wrong type for field 'gui' (expected=%s, actual=%s).".format(
+                        ttypeToString(_expectedType),
+                        ttypeToString(_actualType)
+                      )
+                    )
+                }
               case _ =>
                 if (_passthroughFields == null)
                   _passthroughFields = immutable$Map.newBuilder[Short, TFieldBlob]
@@ -286,6 +319,7 @@ object RealSenseService { self =>
         _iprot.readStructEnd()
     
         new Args(
+          gui,
           if (_passthroughFields == null)
             NoPassthroughFields
           else
@@ -294,35 +328,56 @@ object RealSenseService { self =>
       }
     
       def apply(
+        gui: Boolean
       ): Args =
         new Args(
+          gui
         )
     
-      def unapply(_item: Args): Boolean = true
+      def unapply(_item: Args): _root_.scala.Option[Boolean] = _root_.scala.Some(_item.gui)
     
+    
+      @inline private[realsense] def readGuiValue(_iprot: TProtocol): Boolean = {
+        _iprot.readBool()
+      }
+    
+      @inline private def writeGuiField(gui_item: Boolean, _oprot: TProtocol): Unit = {
+        _oprot.writeFieldBegin(GuiField)
+        writeGuiValue(gui_item, _oprot)
+        _oprot.writeFieldEnd()
+      }
+    
+      @inline private def writeGuiValue(gui_item: Boolean, _oprot: TProtocol): Unit = {
+        _oprot.writeBool(gui_item)
+      }
     
     
     }
     
     class Args(
+        val gui: Boolean,
         val _passthroughFields: immutable$Map[Short, TFieldBlob])
       extends ThriftStruct
-      with _root_.scala.Product
+      with _root_.scala.Product1[Boolean]
       with ValidatingThriftStruct[Args]
       with java.io.Serializable
     {
       import Args._
       def this(
+        gui: Boolean
       ) = this(
+        gui,
         Map.empty
       )
     
+      def _1 = gui
     
     
     
       override def write(_oprot: TProtocol): Unit = {
         Args.validate(this)
         _oprot.writeStructBegin(Struct)
+        writeGuiField(gui, _oprot)
         if (_passthroughFields.nonEmpty) {
           _passthroughFields.values.foreach { _.write(_oprot) }
         }
@@ -331,9 +386,11 @@ object RealSenseService { self =>
       }
     
       def copy(
+        gui: Boolean = this.gui,
         _passthroughFields: immutable$Map[Short, TFieldBlob] = this._passthroughFields
       ): Args =
         new Args(
+          gui,
           _passthroughFields
         )
     
@@ -353,9 +410,10 @@ object RealSenseService { self =>
       override def toString: String = _root_.scala.runtime.ScalaRunTime._toString(this)
     
     
-      override def productArity: Int = 0
+      override def productArity: Int = 1
     
       override def productElement(n: Int): Any = n match {
+        case 0 => this.gui
         case _ => throw new IndexOutOfBoundsException(n.toString)
       }
     
@@ -677,7 +735,7 @@ object RealSenseService { self =>
   trait MethodPerEndpoint
     extends RealSenseService[Future] {
     
-    def capture(): Future[ch.unibas.cs.gravis.realsense.CaptureResult]
+    def capture(gui: Boolean): Future[ch.unibas.cs.gravis.realsense.CaptureResult]
   }
 
   object MethodPerEndpoint {
@@ -691,8 +749,8 @@ object RealSenseService { self =>
      */
     class MethodPerEndpointImpl protected (servicePerEndpoint: ServicePerEndpoint)
       extends MethodPerEndpoint {
-        def capture(): Future[ch.unibas.cs.gravis.realsense.CaptureResult] =
-          servicePerEndpoint.capture(self.Capture.Args())
+        def capture(gui: Boolean): Future[ch.unibas.cs.gravis.realsense.CaptureResult] =
+          servicePerEndpoint.capture(self.Capture.Args(gui))
 
         override def asClosable: _root_.com.twitter.util.Closable =
           servicePerEndpoint.asClosable
@@ -710,9 +768,9 @@ object RealSenseService { self =>
     class ReqRepMethodPerEndpointImpl protected (servicePerEndpoint: ReqRepServicePerEndpoint)
       extends MethodPerEndpoint {
 
-        def capture(): Future[ch.unibas.cs.gravis.realsense.CaptureResult] = {
+        def capture(gui: Boolean): Future[ch.unibas.cs.gravis.realsense.CaptureResult] = {
           val requestCtx = _root_.com.twitter.finagle.context.Contexts.local.getOrElse(_root_.com.twitter.finagle.thrift.Headers.Request.Key, () => _root_.com.twitter.finagle.thrift.Headers.Request.newValues)
-          val scroogeRequest = _root_.com.twitter.scrooge.Request(requestCtx.values, self.Capture.Args())
+          val scroogeRequest = _root_.com.twitter.scrooge.Request(requestCtx.values, self.Capture.Args(gui))
           servicePerEndpoint.capture(scroogeRequest).transform(_root_.com.twitter.finagle.thrift.service.ThriftReqRepServicePerEndpoint.transformResult(_))
         }
 
@@ -724,8 +782,8 @@ object RealSenseService { self =>
   @deprecated("Use MethodPerEndpoint", "2017-11-07")
   class MethodIface(serviceIface: BaseServiceIface)
     extends FutureIface {
-    def capture(): Future[ch.unibas.cs.gravis.realsense.CaptureResult] =
-      serviceIface.capture(self.Capture.Args())
+    def capture(gui: Boolean): Future[ch.unibas.cs.gravis.realsense.CaptureResult] =
+      serviceIface.capture(self.Capture.Args(gui))
   }
 
   implicit object MethodPerEndpointBuilder
@@ -765,7 +823,7 @@ object RealSenseService { self =>
   trait FutureIface
     extends RealSenseService[Future] {
     
-    def capture(): Future[ch.unibas.cs.gravis.realsense.CaptureResult]
+    def capture(gui: Boolean): Future[ch.unibas.cs.gravis.realsense.CaptureResult]
   }
 
   class FinagledClient(

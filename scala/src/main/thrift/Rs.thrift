@@ -97,5 +97,5 @@ exception ThriftServerError {
 }
 
 service RealSenseService {
-    CaptureResult capture() throws(1: ThriftServerError error)
+    CaptureResult capture(1: bool gui) throws(1: ThriftServerError error)
 }

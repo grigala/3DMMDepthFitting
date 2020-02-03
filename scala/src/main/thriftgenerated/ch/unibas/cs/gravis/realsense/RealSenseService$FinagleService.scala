@@ -223,7 +223,7 @@ class RealSenseService$FinagleService(
         if (_root_.com.twitter.finagle.tracing.Trace.isActivelyTracing) {
           _root_.com.twitter.finagle.tracing.Trace.recordRpc("capture")
         }
-        iface.capture()
+        iface.capture(args.gui)
       }
     }
   

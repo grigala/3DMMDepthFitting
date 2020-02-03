@@ -143,9 +143,9 @@ class RealSenseService$FinagleClient(
     }
   }
   
-  def capture(): Future[ch.unibas.cs.gravis.realsense.CaptureResult] = {
+  def capture(gui: Boolean): Future[ch.unibas.cs.gravis.realsense.CaptureResult] = {
     __stats_capture.RequestsCounter.incr()
-    val inputArgs = Capture.Args()
+    val inputArgs = Capture.Args(gui)
   
     val serdeCtx = new _root_.com.twitter.finagle.thrift.DeserializeCtx[ch.unibas.cs.gravis.realsense.CaptureResult](inputArgs, captureRealSenseServiceReplyDeserializer)
     _root_.com.twitter.finagle.context.Contexts.local.let(
