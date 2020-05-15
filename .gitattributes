@@ -1,2 +1,4 @@
 scala/docs/ linguist-documentation
-*.html linguist-language=Scala
+* linguist-vendored
+*.scala linguist-vendored=false
+*.py linguist-vendored=false
