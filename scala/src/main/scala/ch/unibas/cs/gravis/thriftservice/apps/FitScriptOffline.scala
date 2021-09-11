@@ -22,7 +22,7 @@ import scalismo.mesh.{TriangleMesh, VertexColorMesh3D}
 
 
 /**
- * Working with offline files - no need for the camera hardware.
+ * Working with local files - no need for the camera hardware.
  */
 object FitScriptOffline extends App {
     scalismo.initialize()
@@ -38,8 +38,6 @@ object FitScriptOffline extends App {
     val imageScaling = 1.0
     val targetFull = PixelImageIO.read[RGB](new File(s"targetData/targetImage.png")).get
     val landmarksFull = LandmarkIO.readLandmarksJson[_3D](new File(s"targetData/target3DLandmarks.json")).get
-    //    val landmarksFull = LandmarkIO.readLandmarksJson[_3D](new File(s"targetData/gen/landmarks/target3DLandmarks_patrick.json")).get
-    //    val landmarksFull = LandmarkIO.readLandmarksJson[_3D](new File(s"targetData/gen/landmarks/target3DLandmarks_dana.json")).get
 
     // Dealing with outlier landmark points thar are either empty or de-projected wrongly due to stream alignment
     // 1000 = 1m distance
@@ -47,8 +45,6 @@ object FitScriptOffline extends App {
     val targetLandmarkNames: Seq[String] = targetLandmarks.map(lm => lm.id)
 
     val targetPCMesh: TriangleMesh[_3D] = MeshIO.readMesh(new File(s"targetData/targetMesh.ply")).get
-    //    val targetMesh: TriangleMesh[_3D] = MeshIO.readMesh(new File(s"targetData/gen/mesh/targetMesh_patrick.ply")).get
-    //    val targetMesh: TriangleMesh[_3D] = MeshIO.readMesh(new File(s"targetData/gen/mesh/targetMesh_dana.ply")).get
     val modelBFM = "augmentedBFM"
     val modelName = "augmentedModelFace"
     val modelFile = new File(s"data/$modelName.h5")
@@ -97,14 +93,14 @@ object FitScriptOffline extends App {
         val gtMesh = MeshIO.readMesh(new File("data/neutralMe.ply")).get
         val gtLandmarks = LandmarkIO.readLandmarksJson[_3D](new File("data/gtLandmarks.json")).get
 
-//        Console.withOut(fos) {
-//            println("\n> final best fit and target mesh...")
-//            alignMeshesICP(finalFit.shape, finalFitLandmarks, targetMesh, targetLmsSorted, fos)
-//            println("\n> aligning final best fit and ground truth...")
-//            alignMeshesICP(finalFit.shape, finalFitLandmarks, gtMesh, gtLandmarks, fos)
-//            //        println(s"- custom average distance: ${customAVGDistance(finalFit.shape, targetMesh)}")
-//            //        println(s"- custom hausdorff distance(ignores boundary points): ${hausdorffDistance(finalFit.shape, targetMesh)}")
-//        }
+       Console.withOut(fos) {
+           println("\n> final best fit and target mesh...")
+           alignMeshesICP(finalFit.shape, finalFitLandmarks, targetMesh, targetLmsSorted, fos)
+           println("\n> aligning final best fit and ground truth...")
+           alignMeshesICP(finalFit.shape, finalFitLandmarks, gtMesh, gtLandmarks, fos)
+                  println(s"- custom average distance: ${customAVGDistance(finalFit.shape, targetMesh)}")
+                  println(s"- custom hausdorff distance(ignores boundary points): ${hausdorffDistance(finalFit.shape, targetMesh)}")
+       }
 
         val targetImageRGBA = targetFull.map(_.toRGBA)
 
