@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-thrift_file='./scala/src/main/thrift/Rs.thrift';
-python_gen_dir='./python';
-scala_gen_dir='thriftgenerated';
+thrift_file='./FittingPipeline/src/main/scala/thrift/Rs.thrift';
+python_gen_dir='./CameraServer/';
+scala_gen_dir='./FittingPipeline/src/main/scala';
 
 thrift --version
 echo '[INFO] Removing previously generated Python code...'

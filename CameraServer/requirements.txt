@@ -1,0 +1,8 @@
+Cython
+Pillow
+pyrealsense
+numpy
+matplotlib
+mlxtend
+dlib
+opencv-python
