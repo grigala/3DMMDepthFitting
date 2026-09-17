@@ -33,6 +33,8 @@ The applications of this work include but not limited to  [Photo-realistic Face 
 Project contains two language specific modules Python server and the Scala client. 
 The server handles all the camera related operations, including configuration, data acquisition and delivery for fitting pipeline.
 
+Run `./compile.sh` from the repository root to generate the Thrift code before running the scripts.
+
 If you do not have a dedicated camera, [FitScriptOffline.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/apps/FitScriptOffline.scala) is your starting point. 
 
 Otherwise, first you should run [Server.py](scala/src/main/resources/python/Server.py) and then [FitScriptOnline.scala](scala/src/main/scala/ch/unibas/cs/gravis/thriftservice/apps/FitScriptOnline.scala)
